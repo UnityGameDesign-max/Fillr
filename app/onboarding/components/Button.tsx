@@ -2,10 +2,11 @@ import { Dimensions, Pressable, Text } from "react-native";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { router } from "expo-router";
 import React, { useCallback } from "react";
+import { onboardingStore } from "../store/onboardingStore";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedText = Animated.createAnimatedComponent(Text);
@@ -21,38 +22,44 @@ export default function Button({
 }) {
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
+  const isLast = currentIndex.value === length - 1;
+
   const buttonStyle = useAnimatedStyle(() => ({
     width: SCREEN_WIDTH - 40,
     height: 60,
   }));
 
   const continueStyle = useAnimatedStyle(() => ({
-    opacity: currentIndex.value === length - 1 ? withTiming(0) : withTiming(1),
+    opacity: isLast ? withTiming(0) : withTiming(1),
     transform: [
       {
-        translateY:
-          currentIndex.value === length - 1 ? withTiming(20) : withTiming(0),
+        translateY: isLast ? withTiming(20) : withTiming(0),
       },
     ],
   }));
 
   const getStartedStyle = useAnimatedStyle(() => ({
-    opacity: currentIndex.value === length - 1 ? withTiming(1) : withTiming(0),
+    opacity: isLast ? withTiming(1) : withTiming(0),
     transform: [
       {
-        translateY:
-          currentIndex.value === length - 1 ? withTiming(0) : withTiming(-20),
+        translateY: isLast ? withTiming(0) : withTiming(-20),
       },
     ],
   }));
 
   const onPress = useCallback(() => {
-    if (currentIndex.value === length - 1) {
-      console.log("Get Started → Navigate to your Login screen");
+    const indexNow = currentIndex.value;
+    const isLast = indexNow === length - 1;
+
+    if (isLast) {
+      onboardingStore.currentStep = 1;
+      router.replace("/onboarding/select-role");
       return;
     }
+
     flatListRef?.current?.scrollToIndex({
-      index: currentIndex.value + 1,
+      index: indexNow + 1,
+      animated: true,
     });
   }, [currentIndex, length, flatListRef]);
 
@@ -62,7 +69,6 @@ export default function Button({
       onPress={onPress}
       style={buttonStyle}
     >
-
       <AnimatedText
         className="text-white font-semibold text-base absolute"
         style={continueStyle}
