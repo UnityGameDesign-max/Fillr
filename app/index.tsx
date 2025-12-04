@@ -1,50 +1,33 @@
-import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, {
-  useAnimatedRef,
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from "react-native-reanimated";
-import { pages } from "./onboarding/data";
-import ListItem from "./onboarding/ListItem";
-import PaginationElement from "./onboarding/PaginationElement";
-import Button from "./onboarding/Button";
-import React, { useCallback } from "react";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
 
 export default function Index() {
-  const x = useSharedValue(0);
-  const currentIndex = useSharedValue(0);
-  const ref = useAnimatedRef<Animated.FlatList<any>>();
+  const [loading, setLoading] = useState(true);
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (e) => (x.value = e.contentOffset.x),
-  });
+  useEffect(() => {
+    const checkFirstOpen = async () => {
+      const role = await SecureStore.getItemAsync("userRole");
 
-  const onViewableItemsChanged = useCallback(({ viewableItems }: any) => {
-    currentIndex.value = viewableItems?.[0]?.index ?? 0;
-  }, [currentIndex]);
+      if (role) {
+        router.replace("/");
+      } else {
+        router.replace("/onboarding");
+      }
+      setLoading(false);
+    };
 
-  return (
-    <SafeAreaView className="flex-1 bg-white">
-      <Animated.FlatList
-        ref={ref}
-        data={pages}
-        horizontal
-        pagingEnabled
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-        renderItem={({ item, index }) => (
-          <ListItem item={item} index={index} x={x} />
-        )}
-        keyExtractor={(_, i) => String(i)}
-        showsHorizontalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChanged}
-      />
+    checkFirstOpen();
+  }, []);
 
-      <View className="flex-row justify-between items-center px-5 pb-5">
-        <PaginationElement length={pages.length} x={x} />
-        <Button currentIndex={currentIndex} length={pages.length} flatListRef={ref} />
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" />
       </View>
-    </SafeAreaView>
-  );
+    );
+  }
+
+  return null;
 }

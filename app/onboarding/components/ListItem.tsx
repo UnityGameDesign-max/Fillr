@@ -1,13 +1,16 @@
-import { View, useWindowDimensions, ImageURISource } from "react-native";
 import React from "react";
+import { ImageURISource, useWindowDimensions, View } from "react-native";
 import Animated, {
   interpolate,
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { AppText } from "../../../shared/components/AppText";
+
+const AnimatedAppText = Animated.createAnimatedComponent(AppText);
 
 type Props = {
-  item: { text: string; image: ImageURISource };
+  item: { title: string; description: string; image: ImageURISource };
   index: number;
   x: SharedValue<number>;
 };
@@ -44,14 +47,19 @@ export default function ListItem({ item, index, x }: Props) {
   });
 
   return (
-    <View className="flex-1 items-center justify-around" style={{ width: SCREEN_WIDTH }}>
+    <View className=" items-center justify-center" style={{ width: SCREEN_WIDTH }}>
       <Animated.Image source={item.image} resizeMode="contain" style={imageStyle} />
-      <Animated.Text
-        className="font-semibold text-center text-[34px] leading-[41px] px-5"
+      <AnimatedAppText
+        className="font-bold text-center text-[34px] leading-[41px] px-5 pb-5"
         style={textStyle}
       >
-        {item.text}
-      </Animated.Text>
+        {item.title}
+      </AnimatedAppText>
+
+      <AnimatedAppText
+       className="text-center text-[16px] leading-[22px] text-gray-600 py-3 px-7"
+       style={textStyle}
+      >{item.description}</AnimatedAppText>
     </View>
   );
 }
