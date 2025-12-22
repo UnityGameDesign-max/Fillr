@@ -1,24 +1,30 @@
-import { View } from "react-native";
+import { fontFamily } from "@/lib/fontFamily";
+import { PortalHost } from '@rn-primitives/portal';
+import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useCallback } from "react";
+import { View } from "react-native";
 import {
-  useFonts,
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold,
-} from "@expo-google-fonts/inter";
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated";
 import './global.css';
+
+// Configure Reanimated Logger
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // Disable strict mode
+});
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_700Bold,
+    [fontFamily.regular]: require("@/assets/fonts/OpenSans-Regular.ttf"),
+    [fontFamily.bold]: require("@/assets/fonts/OpenSans-Bold.ttf"),
+    [fontFamily.medium]: require('@/assets/fonts/OpenSans-Medium.ttf'),
+    [fontFamily.semiBold]: require('@/assets/fonts/OpenSans-SemiBold.ttf')
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -38,6 +44,7 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+      <PortalHost />
     </View>
   );
 }

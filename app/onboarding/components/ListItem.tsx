@@ -1,13 +1,13 @@
+import { AppText } from "@/components/shared/AppText";
 import React from "react";
-import { ImageURISource, useWindowDimensions, View } from "react-native";
+import { ImageURISource, Text, useWindowDimensions, View } from "react-native";
 import Animated, {
-  interpolate,
-  SharedValue,
-  useAnimatedStyle,
+    interpolate,
+    SharedValue,
+    useAnimatedStyle,
 } from "react-native-reanimated";
-import { AppText } from "../../../shared/components/AppText";
 
-const AnimatedAppText = Animated.createAnimatedComponent(AppText);
+const AnimatedAppText = Animated.createAnimatedComponent(Text);
 
 type Props = {
   item: { title: string; description: string; image: ImageURISource };
@@ -57,7 +57,7 @@ export default function ListItem({ item, index, x }: Props) {
       </AnimatedAppText>
 
       <AnimatedAppText
-       className="text-center text-[16px] leading-[22px] text-gray-600 py-3 px-7"
+       className="text-center font-medium text-[16px] leading-[22px] text-gray-600 py-3 px-7"
        style={textStyle}
       >{item.description}</AnimatedAppText>
     </View>

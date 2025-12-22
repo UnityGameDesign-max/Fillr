@@ -1,3 +1,83 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* LIGHT MODE — Fillr */
+    --background: 0 0% 100%;              /* White */
+    --foreground: 222 14% 11%;            /* #1F2937 */
+    
+    --card: 210 20% 96%;                  /* #F4F6F8 */
+    --card-foreground: 222 14% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 14% 11%;
+
+    --primary: 213 100% 50%;              /* #007AFF Fillr Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 142 75% 45%;             /* #00C853 Fuel Saving Green */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 85%;                    /* Soft gray surfaces */
+    --muted-foreground: 220 9% 46%;       /* #6B7280 */
+
+    --accent: 142 75% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 55%;            /* #FF3B30 fuel price spike */
+    
+    --border: 214 32% 91%;                /* #E5E7EB */
+    --input: 214 32% 91%;
+    --ring: 210 24% 75%;
+
+    --radius: 0.625rem;
+
+    /* Charts - Mobility Data */
+    --chart-1: 213 100% 50%;              /* blue */
+    --chart-2: 142 75% 45%;               /* green */
+    --chart-3: 36 100% 50%;               /* orange */
+    --chart-4: 187 70% 55%;               /* aqua */
+    --chart-5: 0 100% 55%;                /* red */
+  }
+
+  .dark:root {
+    /* DARK MODE — Fillr */
+    --background: 0 0% 7%;                /* #121212 */
+    --foreground: 0 0% 100%;              /* #FFFFFF */
+
+    --card: 0 0% 11%;                     /* #1E1E1E */
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 215 100% 55%;              /* #0A84FF iOS Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 142 83% 52%;             /* Brighter green for dark mode */
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 0 0% 16%;                    /* dark gray */
+    --muted-foreground: 0 0% 80%;         /* light gray text */
+
+    --accent: 142 83% 52%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 85% 52%;             /* #FF453A */
+
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 0 0% 26%;
+
+    --radius: 0.625rem;
+
+    /* Dark charts */
+    --chart-1: 217 100% 65%;
+    --chart-2: 142 83% 52%;
+    --chart-3: 35 100% 60%;
+    --chart-4: 186 72% 56%;
+    --chart-5: 0 85% 60%;
+  }
+}

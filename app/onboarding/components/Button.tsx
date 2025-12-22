@@ -1,11 +1,11 @@
+import { router } from "expo-router";
+import React, { useCallback } from "react";
 import { Dimensions, Pressable, Text } from "react-native";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { router } from "expo-router";
-import React, { useCallback } from "react";
 import { onboardingStore } from "../store/onboardingStore";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -53,7 +53,7 @@ export default function Button({
 
     if (isLast) {
       onboardingStore.currentStep = 1;
-      router.replace("/onboarding/select-role");
+      router.replace("/onboarding/select-province");
       return;
     }
 

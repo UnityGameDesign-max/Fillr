@@ -14,6 +14,14 @@
         "darK": "./assets/icons/ios-dark.png",
         "light": "./assets/icons/ios-light.png",
         "tinted": "./assets/icons/ios-tinted.png"
+      },
+      "infoPlist": {
+        "UIAppFonts": [
+          "OpenSans-Regular.ttf",
+          "OpenSans-Bold.ttf",
+          "OpenSans-Medium.ttf",
+          "OpenSans-SemiBold.ttf"
+        ]
       }
     },
     "android": {
@@ -24,7 +32,13 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.Fillr"
+      "package": "com.anonymous.Fillr",
+      "fonts": {
+        "OpenSans-Regular": "assets/fonts/OpenSans-Regular.ttf",
+        "OpenSans-Bold": "assets/fonts/OpenSans-Bold.ttf",
+        "OpenSans-Medium": "assets/fonts/OpenSans-Medium.ttf",
+        "OpenSans-SemiBold": "assets/fonts/OpenSans-SemiBold.ttf"
+      }
     },
     "web": {
       "output": "static",
@@ -46,12 +60,25 @@
           }
         }
       ],
-      "expo-font",
+      [
+        "expo-font",
+        {
+          "fontFamilies": {
+            "OpenSans-Regular": "OpenSans-Regular.ttf",
+            "OpenSans-Bold": "OpenSans-Bold.ttf",
+            "OpenSans-Medium": "OpenSans-Medium.ttf",
+            "OpenSans-SemiBold": "OpenSans-SemiBold.ttf"
+          }
+        }
+      ],
       "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "globalTextStyles": {
+        "fontFamily": "OpenSans-Regular"
+      }
     },
     "extra": {
       "router": {},
