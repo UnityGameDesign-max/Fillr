@@ -1,3 +1,4 @@
+import ProgressSegments from "@/components/onboarding/ProgressSegments";
 import { AppText } from "@/components/shared/AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -38,20 +39,13 @@ export default function SelectRole() {
     
     onboardingStore.role = selected;
     
-    // If Rideshare Driver is selected, go to target profit screen
-    if (selected === "EHAILING") {
-      onboardingStore.currentStep = 4;
-      router.replace("/onboarding/target-profit");
-    } else {
-      // For other roles, go directly to register
-      onboardingStore.currentStep = 4;
-      router.replace("/onboarding/register");
-    }
+    onboardingStore.currentStep = 3;
+    router.replace("/onboarding/add-vehicle");
   };
 
   const handleBack = () => {
-    onboardingStore.currentStep = 2;
-    router.replace("/onboarding/add-vehicle");
+    onboardingStore.currentStep = 1;
+    router.replace("/onboarding/select-province");
   };
 
   return (
@@ -64,8 +58,9 @@ export default function SelectRole() {
           <Ionicons name="arrow-back" size={24} color="#000" />
         </Pressable>
         <View className="mb-6">
+          <ProgressSegments current={2} total={3} className="mb-3" />
           <AppText className="text-sm font-medium text-gray-500 mb-1">
-            Question 3/3
+            Question 2/3
           </AppText>
           <AppText className="text-3xl font-bold text-gray-900 mb-1">
             What type of role are you?
@@ -87,7 +82,7 @@ export default function SelectRole() {
             <Pressable
               key={opt.id}
               onPress={() => setSelected(opt.id)}
-              className={`w-full p-4 rounded-2xl mb-3 border
+              className={`w-full p-4 rounded-2xl mb-3 border-2
               ${
                 isSelected
                   ? "border-[#00AF54] bg-green-50"

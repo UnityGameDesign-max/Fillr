@@ -1,6 +1,7 @@
 export const fontFamily = {
-    regular: 'OpenSans-Regular',
-    medium: 'OpenSans-Medium',
-    semiBold: 'OpenSans-SemiBold',
-    bold: 'OpenSans-Bold'
+    regular: 'Inter_400Regular',
+    medium: 'Inter_500Medium',
+    semiBold: 'Inter_600SemiBold',
+    bold: 'Inter_700Bold',
+    extraBold: 'Inter_800ExtraBold'
 }

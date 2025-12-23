@@ -2,7 +2,7 @@ import { AppText } from "@/components/shared/AppText";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { onboardingStore } from "./store/onboardingStore";
@@ -20,9 +20,13 @@ const PROFIT_RANGES = {
 export default function TargetProfit() {
   const [selectedPeriod, setSelectedPeriod] = useState<ProfitPeriod>("daily");
   const [profit, setProfit] = useState(PROFIT_RANGES.daily.min);
-  const [isSliderVisible, setIsSliderVisible] = useState(true);
-
+  
   const range = PROFIT_RANGES[selectedPeriod];
+
+  // Update profit when range changes (period switch)
+  useEffect(() => {
+    setProfit(range.min);
+  }, [selectedPeriod]);
 
   const handleContinue = async () => {
     onboardingStore.targetProfit = {
@@ -30,17 +34,17 @@ export default function TargetProfit() {
       amount: profit,
     };
     onboardingStore.currentStep = 4;
-    router.replace("/onboarding/register");
+    router.replace("/onboarding/insights-loading");
   };
 
   const handleSkip = async () => {
     onboardingStore.currentStep = 4;
-    router.replace("/onboarding/register");
+    router.replace("/onboarding/insights-loading");
   };
 
   const handleBack = () => {
     onboardingStore.currentStep = 3;
-    router.replace("/onboarding/select-role");
+    router.replace("/onboarding/add-vehicle");
   };
 
   const formatCurrency = (amount: number) => {
@@ -49,15 +53,7 @@ export default function TargetProfit() {
 
   const handlePeriodChange = (period: ProfitPeriod) => {
     if (period !== selectedPeriod) {
-      setIsSliderVisible(false);
       setSelectedPeriod(period);
-
-      const newRange = PROFIT_RANGES[period];
-      setProfit(newRange.min);
-      
-      setTimeout(() => {
-        setIsSliderVisible(true);
-      }, 0);
     }
   };
 
@@ -138,33 +134,42 @@ export default function TargetProfit() {
             </View>
           </View>
 
-          <View className="mb-8 items-center">
-            <AppText className="text-4xl font-bold text-gray-900 mb-2">
+          <View className="mb-2 items-center">
+             <AppText className="text-sm text-blue-600 font-bold capitalize">
+              {selectedPeriod} target
+            </AppText>
+            <AppText className="text-6xl font-extrabold text-gray-900 mb-1">
               {formatCurrency(profit)}
             </AppText>
-            <AppText className="text-sm text-blue-600 font-semibold capitalize">
-              {selectedPeriod} target
+            <AppText className="text-xs text-gray-400 mt-2 font-medium">
+              Use the slider to set your target
             </AppText>
           </View>
 
           {/* Slider */}
           <View className="mb-4">
             <View style={{ alignItems: 'center' }}>
-              {isSliderVisible && (
-                <Slider
-                  style={{ width: SCREEN_WIDTH - 88, height: 60 }}
-                  minimumValue={range.min}
-                  maximumValue={range.max}
-                  step={range.step}
-                  value={profit}
-                  onValueChange={setProfit}
-                  minimumTrackTintColor="#2563EB"
-                  maximumTrackTintColor="#E5E7EB"
-                  thumbTintColor="#2563EB"
-                />
-              )}
+              <Slider
+                key={selectedPeriod} // Force re-render when period changes to reset min/max correctly
+                style={{ width: SCREEN_WIDTH - 88, height: 40 }}
+                minimumValue={range.min}
+                maximumValue={range.max}
+                step={range.step}
+                value={profit}
+                onValueChange={(val) => setProfit(Math.round(val))}
+                minimumTrackTintColor="#2563EB"
+                maximumTrackTintColor="#E5E7EB"
+                thumbTintColor="#2563EB"
+              />
             </View>
           </View>
+        </View>
+
+        <View className="mt-2 bg-blue-50 p-4 rounded-xl flex-row gap-3 items-start">
+          <Ionicons name="information-circle" size={20} color="#2563EB" style={{ marginTop: 2 }} />
+          <AppText className="flex-1 text-sm text-blue-800 leading-5">
+            Setting a target helps you track real earnings after fuel costs, ensuring you hit your goals every shift.
+          </AppText>
         </View>
       </ScrollView>
 

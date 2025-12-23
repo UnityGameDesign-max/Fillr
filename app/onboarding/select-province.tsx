@@ -1,3 +1,4 @@
+import ProgressSegments from "@/components/onboarding/ProgressSegments";
 import { AppText } from "@/components/shared/AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -71,7 +72,7 @@ export default function SelectProvince() {
     
     onboardingStore.province = selected;
     onboardingStore.currentStep = 2;
-    router.replace("/onboarding/add-vehicle");
+    router.replace("/onboarding/select-role");
   };
 
   const handleBack = () => {
@@ -94,6 +95,7 @@ export default function SelectProvince() {
           <Ionicons name="arrow-back" size={24} color="#000" />
         </Pressable>
         <View className="mb-4">
+          <ProgressSegments current={1} total={3} className="mb-3" />
           <AppText className="text-sm font-medium text-gray-500 mb-1">
             Question 1/3
           </AppText>
@@ -125,7 +127,7 @@ export default function SelectProvince() {
             <Pressable
               key={province.id}
               onPress={() => setSelected(province.id)}
-              className={`w-full p-4 rounded-2xl mb-3 border
+              className={`w-full p-4 rounded-2xl mb-3 border-2
               ${
                 isSelected
                   ? "border-[#00AF54] bg-green-50"

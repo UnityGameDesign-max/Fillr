@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from "react";
+import * as React from "react";
+import { useCallback, useEffect } from "react";
 import { Dimensions, View, ViewToken } from "react-native";
 import Animated, {
     useAnimatedRef,

@@ -1,3 +1,4 @@
+import { fontFamily } from '@/lib/fontFamily';
 import { cn } from '@/lib/utils';
 import * as Slot from '@rn-primitives/slot';
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -76,11 +77,29 @@ function Text({
   }) {
   const textClass = React.useContext(TextClassContext);
   const Component = asChild ? Slot.Text : RNText;
+  const merged = Array.isArray(props.style)
+    ? Object.assign({}, ...props.style)
+    : props.style || {};
+  const cls = className;
+  let family = fontFamily.regular;
+  const weight = merged?.fontWeight;
+  if (weight === '500' || weight === 500 || (cls && cls.includes('font-medium'))) family = fontFamily.medium;
+  if (weight === '600' || weight === 600 || (cls && cls.includes('font-semibold'))) family = fontFamily.semiBold;
+  if (weight === '700' || weight === 700 || (cls && cls.includes('font-bold'))) family = fontFamily.bold;
+  if (
+    weight === '800' ||
+    weight === 800 ||
+    weight === '900' ||
+    weight === 900 ||
+    (cls && (cls.includes('font-extrabold') || cls.includes('font-black')))
+  )
+    family = fontFamily.extraBold;
   return (
     <Component
       className={cn(textVariants({ variant }), textClass, className)}
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+      style={[props.style, { fontFamily: family, fontWeight: undefined }]}
       {...props}
     />
   );

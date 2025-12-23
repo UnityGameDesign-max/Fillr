@@ -1,3 +1,4 @@
+import ProgressSegments from "@/components/onboarding/ProgressSegments";
 import { AppText } from "@/components/shared/AppText";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -7,8 +8,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { onboardingStore } from "./store/onboardingStore";
 
 const FUEL_TYPES = [
-  { id: "PETROL", name: "Petrol", icon: "flash" },
-  { id: "DIESEL", name: "Diesel", icon: "flame" },
+  { id: "UNLEADED_93", name: "Unleaded 93", emoji: "⛽️" },
+  { id: "UNLEADED_95", name: "Unleaded 95", emoji: "⛽️" },
+  { id: "LRP_93", name: "LRP 93", emoji: "⛽️" },
+  { id: "LRP_95", name: "LRP 95", emoji: "⛽️" },
+  { id: "DIESEL_50PPM", name: "Diesel 50 PPM", emoji: "🛢️" },
+  { id: "DIESEL_500PPM", name: "Diesel 500 PPM", emoji: "🛢️" },
 ];
 
 const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
@@ -40,13 +45,17 @@ export default function AddVehicle() {
       fuelType: fuelType!,
       odometer: parseInt(odometer.trim()),
     };
-    onboardingStore.currentStep = 3;
-    router.replace("/onboarding/select-role");
+    onboardingStore.currentStep = 4;
+    if (onboardingStore.role === "EHAILING") {
+      router.replace("/onboarding/target-profit");
+    } else {
+      router.replace("/onboarding/insights-loading");
+    }
   };
 
   const handleBack = () => {
-    onboardingStore.currentStep = 1;
-    router.replace("/onboarding/select-province");
+    onboardingStore.currentStep = 2;
+    router.replace("/onboarding/select-role");
   };
 
   return (
@@ -59,8 +68,9 @@ export default function AddVehicle() {
           <Ionicons name="arrow-back" size={24} color="#000" />
         </Pressable>
         <View className="mb-6">
+          <ProgressSegments current={3} total={3} className="mb-3" />
           <AppText className="text-sm font-medium text-gray-500 mb-1">
-            Question 2/3
+            Question 3/3
           </AppText>
           <AppText className="text-3xl font-bold text-gray-900 mb-1">
             Add Your Vehicle
@@ -121,7 +131,7 @@ export default function AddVehicle() {
                   <Pressable
                     key={yr}
                     onPress={() => setYear(String(yr))}
-                    className={`px-4 py-2 rounded-lg border ${
+                    className={`px-4 py-2 rounded-lg border-2 ${
                       isSelected
                         ? "border-blue-600 bg-blue-50"
                         : "border-gray-300 bg-white"
@@ -160,24 +170,20 @@ export default function AddVehicle() {
           <AppText className="text-sm font-semibold text-gray-700 mb-2">
             Fuel Type *
           </AppText>
-          <View className="flex-row gap-3">
+          <View className="flex-row flex-wrap gap-3">
             {FUEL_TYPES.map((type) => {
               const isSelected = fuelType === type.id;
               return (
                 <Pressable
                   key={type.id}
                   onPress={() => setFuelType(type.id)}
-                  className={`flex-1 p-4 rounded-xl border flex-row items-center justify-center gap-2 ${
+                  className={`w-[48%] p-4 rounded-xl border-2 flex-row items-center justify-center gap-2 ${
                     isSelected
                       ? "border-blue-600 bg-blue-50"
                       : "border-gray-300 bg-white"
                   }`}
                 >
-                  <Ionicons
-                    name={type.icon as any}
-                    size={20}
-                    color={isSelected ? "#2563EB" : "#6B7280"}
-                  />
+                  <AppText className="text-2xl">{type.emoji}</AppText>
                   <AppText
                     className={`text-base font-semibold ${
                       isSelected ? "text-blue-600" : "text-gray-700"

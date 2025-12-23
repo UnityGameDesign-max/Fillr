@@ -1,6 +1,6 @@
 import { fontFamily } from "@/lib/fontFamily";
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, useFonts } from "@expo-google-fonts/inter";
 import { PortalHost } from '@rn-primitives/portal';
-import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useCallback } from "react";
@@ -21,10 +21,11 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    [fontFamily.regular]: require("@/assets/fonts/OpenSans-Regular.ttf"),
-    [fontFamily.bold]: require("@/assets/fonts/OpenSans-Bold.ttf"),
-    [fontFamily.medium]: require('@/assets/fonts/OpenSans-Medium.ttf'),
-    [fontFamily.semiBold]: require('@/assets/fonts/OpenSans-SemiBold.ttf')
+    [fontFamily.regular]: Inter_400Regular,
+    [fontFamily.medium]: Inter_500Medium,
+    [fontFamily.semiBold]: Inter_600SemiBold,
+    [fontFamily.bold]: Inter_700Bold,
+    [fontFamily.extraBold]: Inter_800ExtraBold,
   });
 
   const onLayoutRootView = useCallback(async () => {

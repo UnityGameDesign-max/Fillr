@@ -19,7 +19,3 @@ export const onboardingStore = proxy({
     amount: number;
   } | null,
 });
-
-export default function StoreRoute() {
-  return null;
-}

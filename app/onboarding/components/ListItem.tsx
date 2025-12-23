@@ -1,4 +1,3 @@
-import { AppText } from "@/components/shared/AppText";
 import React from "react";
 import { ImageURISource, Text, useWindowDimensions, View } from "react-native";
 import Animated, {

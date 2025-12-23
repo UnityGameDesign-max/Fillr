@@ -20,8 +20,3 @@ export const pages = [
     image: require("../../assets/illustrations/insights-illustration.png"),
   },
 ];
-
-export default function DataRoute() {
-  return null;
-}
-

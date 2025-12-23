@@ -10,21 +10,38 @@ import { Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { fontFamily } from "@/lib/fontFamily";
+import { supabase } from "@/lib/supabase";
 
 export default function Register() {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const disabled = !emailOrPhone || !password;
 
   const handleRegister = async () => {
-    if (disabled) return;
+    if (disabled || loading) return;
+    setLoading(true);
+    setError(null);
 
-    await SecureStore.setItemAsync(
-      "userData",
-      JSON.stringify({ emailOrPhone })
-    );
+    const email = emailOrPhone.trim();
+    const { error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (signUpError) {
+      setError(signUpError.message);
+      setLoading(false);
+      return;
+    }
+
+    // Optional: store a minimal local snapshot
+    await SecureStore.setItemAsync("userEmail", email);
+
+    setLoading(false);
     router.replace("/onboarding/select-role");
   };
 
@@ -39,6 +56,8 @@ export default function Register() {
       <View className="items-center">
         <View className="w-full">
           <Input
+            value={emailOrPhone}
+            onChangeText={setEmailOrPhone}
             keyboardType="email-address"
             textContentType="emailAddress"
             autoComplete="email"
@@ -47,9 +66,39 @@ export default function Register() {
         </View>
       </View>
 
+      <View className="items-center mt-4">
+        <View className="w-full">
+          <Input
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPass}
+            textContentType="password"
+            autoComplete="password"
+            placeholder="Password"
+          />
+        </View>
+      </View>
 
-      <Button>
-        <Text>Button</Text>
+      <View className="flex-row items-center mt-3">
+        <Pressable onPress={() => setShowPass((s) => !s)}>
+          <Text className="text-blue-600">
+            {showPass ? "Hide password" : "Show password"}
+          </Text>
+        </Pressable>
+      </View>
+
+      {error ? (
+        <View className="mt-3">
+          <Text className="text-red-600">{error}</Text>
+        </View>
+      ) : null}
+
+      <Button
+        className="mt-6"
+        disabled={disabled || loading}
+        onPress={handleRegister}
+      >
+        <Text>{loading ? "Creating account..." : "Create Account"}</Text>
       </Button>
 
       {/* Divider */}
