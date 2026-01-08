@@ -1,21 +1,17 @@
 import { AppText } from "@/components/shared/AppText";
+import { PROFIT_RANGES } from "@/data/onboarding";
+import { onboardingStore } from "@/store/onboardingStore";
+import { ProfitPeriod } from "@/types/onboarding";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { onboardingStore } from "./store/onboardingStore";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-type ProfitPeriod = "daily" | "weekly" | "monthly";
 
-const PROFIT_RANGES = {
-  daily: { min: 100, max: 5000, step: 50 },
-  weekly: { min: 500, max: 35000, step: 250 },
-  monthly: { min: 2000, max: 150000, step: 1000 },
-};
 
 export default function TargetProfit() {
   const [selectedPeriod, setSelectedPeriod] = useState<ProfitPeriod>("daily");
@@ -179,15 +175,15 @@ export default function TargetProfit() {
           className="h-14 rounded-xl items-center justify-center bg-blue-600"
         >
           <AppText className="text-white font-semibold text-base">
-            Continue
+            Set Goal & Continue
           </AppText>
         </Pressable>
         <Pressable
           onPress={handleSkip}
           className="h-14 rounded-xl items-center justify-center"
         >
-          <AppText className="text-gray-600 font-semibold text-base">
-            Skip for now
+          <AppText className="text-blue-600 font-semibold text-base">
+            I'll do this later
           </AppText>
         </Pressable>
       </View>

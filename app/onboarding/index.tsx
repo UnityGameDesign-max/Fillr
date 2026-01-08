@@ -1,18 +1,20 @@
+import Button from "@/components/onboarding/Button";
+import ListItem from "@/components/onboarding/ListItem";
+import PaginationElement from "@/components/onboarding/PaginationElement";
+import { AppText } from "@/components/shared/AppText";
+import { pages } from "@/data/onboarding";
+import { onboardingStore } from "@/store/onboardingStore";
+import { router } from "expo-router";
 import * as React from "react";
 import { useCallback, useEffect } from "react";
-import { Dimensions, View, ViewToken } from "react-native";
+import { Dimensions, Pressable, View, ViewToken } from "react-native";
 import Animated, {
-    useAnimatedRef,
-    useAnimatedScrollHandler,
-    useSharedValue,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useSharedValue,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSnapshot } from "valtio";
-import Button from "./components/Button";
-import ListItem from "./components/ListItem";
-import PaginationElement from "./components/PaginationElement";
-import { pages } from "./data";
-import { onboardingStore } from "./store/onboardingStore";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -76,6 +78,12 @@ export default function Onboarding() {
           length={pages.length}
           flatListRef={ref}
         />
+        {/* Sign In Link - Only on first slide */}
+        {snap.slideIndex === 0 && (
+          <Pressable onPress={() => router.replace("/auth/sign-in")} className="mt-4">            
+             <AppText className="text-blue-600 font-semibold">Already have an account?</AppText>
+          </Pressable>
+        )}
       </View>
     </SafeAreaView>
   );

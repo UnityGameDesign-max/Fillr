@@ -1,28 +1,66 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { supabase } from "@/lib/supabase";
+import { Ionicons } from '@expo/vector-icons';
+import { router } from "expo-router";
+import { useColorScheme } from "nativewind";
+import React from 'react';
+import { Pressable, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabSettings() {
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
+  const handleSignOut = async () => {
+    console.log("Sign out pressed - executing direct signout");
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error("Sign out error:", error);
+            alert(`Error signing out: ${error.message}`);
+        }
+        router.replace("/onboarding/login");
+    } catch (e) {
+        console.error("Unexpected error signing out:", e);
+        router.replace("/onboarding/login");
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.text}>Settings Tab</Text>
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="px-5 py-4 bg-card border-b border-border">
+        <Text className="text-2xl font-bold text-foreground">Settings</Text>
+      </View>
+      
+      <View className="flex-1 pt-6">
+        <View className="mb-6">
+            <Text className="text-sm font-semibold text-muted-foreground uppercase mb-2 mt-4 ml-5">Appearance</Text>
+            <View className="bg-card border-y border-border">
+                <View className="flex-row items-center py-4 px-5">
+                    <View className="w-8 items-center mr-3">
+                        <Ionicons name="moon-outline" size={24} color={isDark ? "#fff" : "#000"} />
+                    </View>
+                    <Text className="flex-1 text-base text-foreground">Dark Mode</Text>
+                    <Switch 
+                        value={isDark} 
+                        onValueChange={toggleColorScheme}
+                    />
+                </View>
+            </View>
+        </View>
+
+        <View className="mb-6">
+            <Text className="text-sm font-semibold text-muted-foreground uppercase mb-2 mt-4 ml-5">Account</Text>
+            <View className="bg-card border-y border-border">
+                <Pressable className="flex-row items-center py-4 px-5 active:opacity-70" onPress={handleSignOut}>
+                    <View className="w-8 items-center mr-3">
+                        <Ionicons name="log-out-outline" size={24} color="#EF4444" />
+                    </View>
+                    <Text className="flex-1 text-base text-red-500">Sign Out</Text>
+                    <Ionicons name="chevron-forward" size={20} color={isDark ? "#6B7280" : "#C7C7CC"} />
+                </Pressable>
+            </View>
+        </View>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});

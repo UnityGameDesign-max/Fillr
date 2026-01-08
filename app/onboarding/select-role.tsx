@@ -1,35 +1,12 @@
 import ProgressSegments from "@/components/onboarding/ProgressSegments";
 import { AppText } from "@/components/shared/AppText";
+import { ROLES } from "@/data/onboarding";
+import { onboardingStore } from "@/store/onboardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { onboardingStore } from "./store/onboardingStore";
-
-export const Role = [
-  {
-    id: "EHAILING",
-    title: "Rideshare Driver",
-    desc: "Best for drivers earning with e-hailing apps. Track income vs. fuel costs, route suggestions, and find the cheapest fuel.",
-    icon: <Ionicons name="location" size={22} color="#F4B200" />,
-    iconBg: "bg-yellow-100",
-  },
-  {
-    id: "SOLO",
-    title: "Regular Driver",
-    desc: "Perfect for personal use. Monitor your daily commute, log fuel expenses, and gain driving insights to save money.",
-    icon: <Ionicons name="car" size={22} color="#00AF54" />,
-    iconBg: "bg-green-100",
-  },
-  {
-    id: "FLEET",
-    title: "Fleet Manager",
-    desc: "Ideal for businesses. Oversee multiple vehicles, track fuel usage, and optimize routes for maximum efficiency.",
-    icon: <Ionicons name="business" size={22} color="#007BFF" />,
-    iconBg: "bg-blue-100",
-  },
-];
 
 export default function SelectRole() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -76,7 +53,7 @@ export default function SelectRole() {
         contentContainerStyle={{ paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       >
-        {Role.map((opt) => {
+        {ROLES.map((opt) => {
           const isSelected = selected === opt.id;
           return (
             <Pressable
@@ -93,7 +70,7 @@ export default function SelectRole() {
                 <View
                   className={`w-10 h-10 rounded-xl items-center justify-center ${opt.iconBg}`}
                 >
-                  {opt.icon}
+                  <Ionicons name={opt.iconName} size={22} color={opt.iconColor} />
                 </View>
                 <View className="flex-1">
                   <AppText className="text-lg font-semibold text-gray-900">

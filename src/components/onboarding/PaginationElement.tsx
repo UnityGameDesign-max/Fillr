@@ -3,7 +3,7 @@ import React from "react";
 import { SharedValue } from "react-native-reanimated";
 import Dot from "./Dot";
 import { useSnapshot } from "valtio";
-import { onboardingStore } from "../store/onboardingStore";
+import { onboardingStore } from "@/store/onboardingStore";
 
 export default function PaginationElement({
   length,

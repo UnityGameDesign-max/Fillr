@@ -1,12 +1,12 @@
 import LoadingDots from "@/components/onboarding/LoadingDots";
 import { AppText } from "@/components/shared/AppText";
+import { onboardingStore } from "@/store/onboardingStore";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSnapshot } from "valtio";
-import { onboardingStore } from "./store/onboardingStore";
 
 export default function InsightsLoading() {
   const snap = useSnapshot(onboardingStore);
@@ -68,7 +68,7 @@ export default function InsightsLoading() {
       <View className="flex-1 items-center justify-center px-5">
         <Animated.View className="w-40 h-40 rounded-2xl items-center justify-center" style={pulseStyle}>
           <Image
-            source={require("@/assets/images/android-icon-monochrome.png")}
+            source={require("../../assets/images/android-icon-monochrome.png")}
             style={{ width: 100, height: 100 }}
             resizeMode="contain"
           />

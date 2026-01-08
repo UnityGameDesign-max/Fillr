@@ -1,20 +1,14 @@
 import ProgressSegments from "@/components/onboarding/ProgressSegments";
 import { AppText } from "@/components/shared/AppText";
+import { FUEL_TYPES } from "@/data/onboarding";
+import { onboardingStore } from "@/store/onboardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { onboardingStore } from "./store/onboardingStore";
 
-const FUEL_TYPES = [
-  { id: "UNLEADED_93", name: "Unleaded 93", emoji: "⛽️" },
-  { id: "UNLEADED_95", name: "Unleaded 95", emoji: "⛽️" },
-  { id: "LRP_93", name: "LRP 93", emoji: "⛽️" },
-  { id: "LRP_95", name: "LRP 95", emoji: "⛽️" },
-  { id: "DIESEL_50PPM", name: "Diesel 50 PPM", emoji: "🛢️" },
-  { id: "DIESEL_500PPM", name: "Diesel 500 PPM", emoji: "🛢️" },
-];
+
 
 const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
 

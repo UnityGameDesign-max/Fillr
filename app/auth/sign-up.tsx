@@ -1,27 +1,30 @@
 import { AppText } from "@/components/shared/AppText";
 import { supabase } from "@/lib/supabase";
+import { onboardingStore } from "@/store/onboardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  TextInput,
-  View,
+    ActivityIndicator,
+    Image,
+    Pressable,
+    ScrollView,
+    TextInput,
+    View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSnapshot } from "valtio";
 
-export default function SignIn() {
-  const [emailOrPhone, setEmailOrPhone] = useState("");
+export default function SignUp() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showResend, setShowResend] = useState(false);
+
+  const snap = useSnapshot(onboardingStore);
 
   // Google Auth Request
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -56,6 +59,13 @@ export default function SignIn() {
         return;
       }
 
+      // Handle profile creation for Google Sign Up (if new user)
+      if (data.user) {
+         // Try to save profile data (similar to email sign up)
+         // Note: If user already exists, this might just update or be skipped
+         await saveProfileData(data.user.id);
+      }
+
       // On success
       await SecureStore.setItemAsync("hasSeenOnboarding", "true");
       setLoading(false);
@@ -69,39 +79,86 @@ export default function SignIn() {
     }
   };
 
-  const handleResendConfirmation = async () => {
-    if (!emailOrPhone) return;
-    setLoading(true);
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email: emailOrPhone,
-    });
-    setLoading(false);
-    if (error) {
-      setError(error.message);
-    } else {
-      setError(null);
-      // Using a simple alert for now, could be a toast in production
-      alert("Confirmation email resent! Please check your inbox.");
-      setShowResend(false);
-    }
+  const saveProfileData = async (userId: string) => {
+      console.log("Saving profile data for:", userId);
+      console.log("Snapshot data:", { role: snap.role, province: snap.province });
+
+      try {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .upsert({
+            id: userId,
+            role: snap.role || 'SOLO', // Default to Regular Driver if null
+            province: snap.province,
+            target_profit_amount: snap.targetProfit?.amount,
+            target_profit_period: snap.targetProfit?.period,
+            updated_at: new Date(),
+          });
+        
+        if (profileError) {
+            console.error("Error saving profile:", profileError);
+            alert(`Failed to save profile: ${profileError.message}`);
+            return;
+        }
+
+        if (snap.vehicle) {
+           const { error: vehicleError } = await supabase.from("vehicles").insert({
+              user_id: userId,
+              // ... map vehicle fields
+              make: snap.vehicle.make,
+              model: snap.vehicle.model,
+              year: snap.vehicle.year,
+              engine: snap.vehicle.engine,
+              fuel_type: snap.vehicle.fuelType,
+              odometer: snap.vehicle.odometer,
+           });
+
+           if (vehicleError) {
+               console.error("Error saving vehicle:", vehicleError);
+               // We don't block registration for vehicle error, but log it
+           }
+        }
+      } catch (e) {
+          console.error("Unexpected error saving profile data:", e);
+      }
   };
 
+  // Password strength state
+  const getStrength = (pass: string) => {
+    let score = 0;
+    if (pass.length > 5) score++;
+    if (pass.length > 7) score++;
+    if (/[0-9]/.test(pass)) score++;
+    if (/[^A-Za-z0-9]/.test(pass)) score++;
+    return score; // 0-4
+  };
+
+  const strengthScore = getStrength(password);
+  const strengthLabels = ["Weak", "Weak", "Fair", "Good", "Strong"];
+  const strengthColor = [
+    "#E5E7EB", // 0 (Gray)
+    "#EF4444", // 1 (Red)
+    "#F59E0B", // 2 (Orange)
+    "#3B82F6", // 3 (Blue)
+    "#10B981", // 4 (Green)
+  ];
+
   const validateInputs = () => {
-    if (!emailOrPhone) return "Email is required";
+    if (!email) return "Email is required";
     
     // Email regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailOrPhone)) {
+    if (!emailRegex.test(email)) {
       return "Please enter a valid email address";
     }
 
     if (!password) return "Password is required";
+    if (password.length < 6) return "Password must be at least 6 characters";
     
     return null;
   };
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     const validationError = validateInputs();
     if (validationError) {
       setError(validationError);
@@ -112,18 +169,42 @@ export default function SignIn() {
     setLoading(true);
     setError(null);
 
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: emailOrPhone,
+    // 1. Sign Up
+    const { error: signUpError, data } = await supabase.auth.signUp({
+      email: email,
       password: password,
+      options: {
+        data: {
+          role: snap.role || 'SOLO',
+          province: snap.province,
+          target_profit_amount: snap.targetProfit?.amount,
+          target_profit_period: snap.targetProfit?.period,
+          vehicle: snap.vehicle ? {
+            make: snap.vehicle.make,
+            model: snap.vehicle.model,
+            year: snap.vehicle.year,
+            engine: snap.vehicle.engine,
+            fuelType: snap.vehicle.fuelType,
+            odometer: snap.vehicle.odometer,
+          } : null,
+        },
+      },
     });
 
-    if (signInError) {
-      if (signInError.message.includes("Email not confirmed")) {
-        setError("Please verify your email address before signing in.");
-        setShowResend(true);
+    if (signUpError) {
+      console.error("Sign Up Error:", signUpError);
+      
+      if (signUpError.message.includes("Error sending confirmation email")) {
+          alert(
+              "Too many signup attempts or Email Service Issue.\n\n" +
+              "1. Try a different email address.\n" +
+              "2. Check Supabase > Auth > Rate Limits.\n" +
+              "3. Use a Custom SMTP server in Supabase."
+          );
       } else {
-        setError(signInError.message);
+          setError(signUpError.message);
       }
+      
       setLoading(false);
       return;
     }
@@ -131,26 +212,20 @@ export default function SignIn() {
     // On success
     await SecureStore.setItemAsync("hasSeenOnboarding", "true");
     setLoading(false);
-
+    
     if (data.session) {
-      router.replace("/(tabs)");
+       router.replace("/(tabs)");
+    } else if (data.user && !data.session) {
+       // Email confirmation required
+       router.replace({
+         pathname: "/auth/verify-email",
+         params: { email: email }
+       });
     }
-  };
-
-  const resetOnboarding = async () => {
-    await SecureStore.deleteItemAsync("hasSeenOnboarding");
-    router.replace("/onboarding");
   };
 
   return (
     <SafeAreaView className="flex-1 bg-[#F8F9FB]">
-      {/* Reset Onboarding (Dev Only) */}
-      <View className="absolute top-12 right-6 z-50">
-        <Pressable onPress={resetOnboarding}>
-          <Ionicons name="refresh-circle" size={28} color="#9CA3AF" />
-        </Pressable>
-      </View>
-
       <ScrollView
         contentContainerStyle={{ paddingBottom: 24, paddingHorizontal: 24 }}
         showsVerticalScrollIndicator={false}
@@ -175,15 +250,15 @@ export default function SignIn() {
         {/* Tab Switcher */}
         <View className="flex-row bg-gray-200 p-1 rounded-xl mb-6">
           <Pressable
-            className="flex-1 py-3 items-center justify-center bg-white shadow-sm rounded-lg"
-          >
-            <AppText className="text-gray-900 font-semibold">Sign In</AppText>
-          </Pressable>
-          <Pressable
-            onPress={() => router.replace("/auth/sign-up")}
+            onPress={() => router.replace("/auth/sign-in")}
             className="flex-1 py-3 items-center justify-center rounded-lg"
           >
-            <AppText className="text-gray-500 font-medium">Create Account</AppText>
+            <AppText className="text-gray-500 font-medium">Sign In</AppText>
+          </Pressable>
+          <Pressable
+            className="flex-1 py-3 items-center justify-center bg-white shadow-sm rounded-lg"
+          >
+            <AppText className="text-gray-900 font-semibold">Create Account</AppText>
           </Pressable>
         </View>
 
@@ -195,9 +270,9 @@ export default function SignIn() {
               Email Address
             </AppText>
             <TextInput
-              value={emailOrPhone}
-              onChangeText={setEmailOrPhone}
-              placeholder="e.g. name@example.com"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="name@example.com"
               className="w-full h-14 px-4 rounded-xl border border-gray-200 bg-white text-base text-gray-900"
               placeholderTextColor="#9CA3AF"
               autoCapitalize="none"
@@ -207,19 +282,14 @@ export default function SignIn() {
 
           {/* Password */}
           <View>
-            <View className="flex-row justify-between items-center mb-2">
-                <AppText className="text-sm font-semibold text-gray-900">
-                Password
-                </AppText>
-                <Pressable>
-                    <AppText className="text-blue-600 text-sm font-medium">Forgot Password?</AppText>
-                </Pressable>
-            </View>
+            <AppText className="text-sm font-semibold text-gray-900 mb-2">
+              Password
+            </AppText>
             <View className="relative">
               <TextInput
                 value={password}
                 onChangeText={setPassword}
-                placeholder="Enter your password"
+                placeholder="Create a password"
                 secureTextEntry={!showPass}
                 className="w-full h-14 px-4 pr-12 rounded-xl border border-gray-200 bg-white text-base text-gray-900"
                 placeholderTextColor="#9CA3AF"
@@ -236,7 +306,32 @@ export default function SignIn() {
                 />
               </Pressable>
             </View>
-            
+
+            {/* Strength Indicator */}
+            {password.length > 0 && (
+              <View className="flex-row items-center gap-2 mt-3">
+                <View className="flex-1 flex-row gap-1 h-1">
+                  {[1, 2, 3, 4].map((level) => (
+                    <View
+                      key={level}
+                      className="flex-1 rounded-full"
+                      style={{
+                        backgroundColor:
+                          strengthScore >= level
+                            ? strengthColor[strengthScore]
+                            : "#E5E7EB",
+                      }}
+                    />
+                  ))}
+                </View>
+                <AppText
+                  className="text-xs font-medium"
+                  style={{ color: strengthColor[strengthScore] || "#9CA3AF" }}
+                >
+                  {strengthLabels[strengthScore]}
+                </AppText>
+              </View>
+            )}
           </View>
 
           {error && (
@@ -244,19 +339,12 @@ export default function SignIn() {
               <AppText className="text-red-600 text-sm text-center">
                 {error}
               </AppText>
-              {showResend && (
-                <Pressable onPress={handleResendConfirmation} className="mt-2">
-                  <AppText className="text-blue-600 text-sm font-bold text-center underline">
-                    Resend Confirmation Email
-                  </AppText>
-                </Pressable>
-              )}
             </View>
           )}
 
-          {/* Sign In Button */}
+          {/* Create Button */}
           <Pressable
-            onPress={handleLogin}
+            onPress={handleRegister}
             disabled={loading}
             className={`h-14 rounded-xl items-center justify-center mt-2 ${
               loading ? "bg-blue-400" : "bg-blue-600"
@@ -266,7 +354,7 @@ export default function SignIn() {
               <ActivityIndicator color="white" />
             ) : (
               <AppText className="text-white font-semibold text-base">
-                Sign In
+                Create Account
               </AppText>
             )}
           </Pressable>
@@ -275,7 +363,7 @@ export default function SignIn() {
           <View className="flex-row items-center my-2">
             <View className="flex-1 h-[1px] bg-gray-200" />
             <AppText className="mx-4 text-gray-500 text-sm">
-              or
+              or sign up with
             </AppText>
             <View className="flex-1 h-[1px] bg-gray-200" />
           </View>
@@ -289,15 +377,15 @@ export default function SignIn() {
             >
                <Ionicons name="logo-google" size={20} color="#1F2937" />
               <AppText className="text-gray-900 font-semibold text-base">
-                Sign In with Google
+                Sign Up with Google
               </AppText>
             </Pressable>
+
           </View>
 
-           {/* Footer */}
-           <View className="mt-4 mb-6">
+          <View className="mt-4 mb-6">
             <AppText className="text-center text-gray-500 text-xs leading-5">
-              By continuing, you agree to our{" "}
+              By creating an account, you agree to our{" "}
               <AppText className="text-blue-600 font-medium">Terms of Service</AppText>
               {" and "}
               <AppText className="text-blue-600 font-medium">Privacy Policy</AppText>.

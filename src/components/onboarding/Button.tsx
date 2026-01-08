@@ -1,15 +1,12 @@
 import { router } from "expo-router";
 import React, { useCallback } from "react";
-import { Dimensions, Pressable, Text } from "react-native";
+import { Dimensions, Pressable } from "react-native";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { onboardingStore } from "../store/onboardingStore";
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-const AnimatedText = Animated.createAnimatedComponent(Text);
+import { onboardingStore } from "@/store/onboardingStore";
 
 export default function Button({
   currentIndex,
@@ -23,6 +20,8 @@ export default function Button({
   const SCREEN_WIDTH = Dimensions.get("window").width;
 
   const isLast = currentIndex.value === length - 1;
+  const isFirst = currentIndex.value === 0;
+  const showGetStarted = isLast || isFirst;
 
   const buttonStyle = useAnimatedStyle(() => ({
     width: SCREEN_WIDTH - 40,
@@ -30,19 +29,19 @@ export default function Button({
   }));
 
   const continueStyle = useAnimatedStyle(() => ({
-    opacity: isLast ? withTiming(0) : withTiming(1),
+    opacity: showGetStarted ? withTiming(0) : withTiming(1),
     transform: [
       {
-        translateY: isLast ? withTiming(20) : withTiming(0),
+        translateY: showGetStarted ? withTiming(20) : withTiming(0),
       },
     ],
   }));
 
   const getStartedStyle = useAnimatedStyle(() => ({
-    opacity: isLast ? withTiming(1) : withTiming(0),
+    opacity: showGetStarted ? withTiming(1) : withTiming(0),
     transform: [
       {
-        translateY: isLast ? withTiming(0) : withTiming(-20),
+        translateY: showGetStarted ? withTiming(0) : withTiming(-20),
       },
     ],
   }));
@@ -64,24 +63,28 @@ export default function Button({
   }, [currentIndex, length, flatListRef]);
 
   return (
-    <AnimatedPressable
-      className="flex-row items-center justify-center rounded-xl bg-[#1d4ed8] overflow-hidden mt-8"
-      onPress={onPress}
+    <Animated.View
+      className="mt-8 rounded-xl bg-[#1d4ed8] overflow-hidden"
       style={buttonStyle}
     >
-      <AnimatedText
-        className="text-white font-semibold text-base absolute"
-        style={continueStyle}
+      <Pressable
+        className="flex-1 flex-row items-center justify-center w-full h-full"
+        onPress={onPress}
       >
-        Continue
-      </AnimatedText>
+        <Animated.Text
+          className="text-white font-semibold text-base absolute"
+          style={continueStyle}
+        >
+          Continue
+        </Animated.Text>
 
-      <AnimatedText
-        className="text-white font-semibold text-base absolute"
-        style={getStartedStyle}
-      >
-        Get Started
-      </AnimatedText>
-    </AnimatedPressable>
+        <Animated.Text
+          className="text-white font-semibold text-base absolute"
+          style={getStartedStyle}
+        >
+          Get Started
+        </Animated.Text>
+      </Pressable>
+    </Animated.View>
   );
 }

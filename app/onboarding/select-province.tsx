@@ -1,68 +1,14 @@
 import ProgressSegments from "@/components/onboarding/ProgressSegments";
 import { AppText } from "@/components/shared/AppText";
+import { PROVINCES } from "@/data/onboarding";
+import { onboardingStore } from "@/store/onboardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { onboardingStore } from "./store/onboardingStore";
 
-export const Provinces = [
-  {
-    id: "GAUTENG",
-    name: "Gauteng",
-    pricing: "Inland (Reef)",
-    emoji: "🏔️",
-  },
-  {
-    id: "WESTERN_CAPE",
-    name: "Western Cape",
-    pricing: "Coastal",
-    emoji: "🌊",
-  },
-  {
-    id: "KWAZULU_NATAL",
-    name: "KwaZulu-Natal",
-    pricing: "Coastal",
-    emoji: "🌊",
-  },
-  {
-    id: "EASTERN_CAPE",
-    name: "Eastern Cape",
-    pricing: "Coastal",
-    emoji: "🌊",
-  },
-  {
-    id: "LIMPOPO",
-    name: "Limpopo",
-    pricing: "Inland (Reef)",
-    emoji: "🏔️",
-  },
-  {
-    id: "MPUMALANGA",
-    name: "Mpumalanga",
-    pricing: "Inland (Reef)",
-    emoji: "🏔️",
-  },
-  {
-    id: "NORTH_WEST",
-    name: "North West",
-    pricing: "Inland (Reef)",
-    emoji: "🏔️",
-  },
-  {
-    id: "FREE_STATE",
-    name: "Free State",
-    pricing: "Inland (Reef)",
-    emoji: "🏔️",
-  },
-  {
-    id: "NORTHERN_CAPE",
-    name: "Northern Cape",
-    pricing: "Inland (Reef)",
-    emoji: "🏔️",
-  },
-];
+
 
 export default function SelectProvince() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -121,7 +67,7 @@ export default function SelectProvince() {
         contentContainerStyle={{ paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       >
-        {Provinces.map((province) => {
+        {PROVINCES.map((province) => {
           const isSelected = selected === province.id;
           return (
             <Pressable

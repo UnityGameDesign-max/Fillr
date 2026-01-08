@@ -1,12 +1,12 @@
 import { AppText } from "@/components/shared/AppText";
 import Icon from "@/components/ui/icon";
+import { onboardingStore } from "@/store/onboardingStore";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSnapshot } from "valtio";
-import { onboardingStore } from "./store/onboardingStore";
-import { Ionicons } from "@expo/vector-icons";
 
 export default function Insights() {
   const snap = useSnapshot(onboardingStore);
@@ -34,7 +34,7 @@ export default function Insights() {
 
   const handleContinue = () => {
     onboardingStore.currentStep = 4;
-    router.replace("/auth/sign-in");
+    router.replace("/auth/sign-up");
   };
 
   const handleBack = () => {
@@ -238,7 +238,7 @@ export default function Insights() {
           className="h-14 rounded-xl items-center justify-center bg-blue-600"
         >
           <AppText className="text-white  text-base">
-            Enter the app
+            Create Account
           </AppText>
         </Pressable>
       </View>

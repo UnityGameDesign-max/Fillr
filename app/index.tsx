@@ -2,29 +2,51 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
+import { supabase } from "@/lib/supabase";
 
 export default function Index() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkFirstOpen = async () => {
-      const role = await SecureStore.getItemAsync("userRole");
+    const checkSession = async () => {
+      // 1. Check for active Supabase session
+      const { data: { session } } = await supabase.auth.getSession();
 
-      if (role) {
-        router.replace("/");
+      if (session) {
+        // User is logged in -> Go to Home
+        router.replace("/(tabs)"); // Assuming /(tabs) is the home route
       } else {
-        router.replace("/onboarding");
+        // User is NOT logged in
+        // 2. Check if they have seen onboarding before
+        const hasSeenOnboarding = await SecureStore.getItemAsync("hasSeenOnboarding");
+
+        if (hasSeenOnboarding === "true") {
+          // If they've seen onboarding, they likely want to Log In or Create Account.
+          // Since the prompt asks to "not show onboarding again unless account is deleted",
+          // we send them to the Auth/Create Account screen.
+          // I'll send them to register (Create Account) as per the design request flow,
+          // or maybe Sign In. Usually Sign In is better for returning users.
+          // But the user emphasized "land on creating an account after onboarding".
+          // If they restart app and are logged out, Sign In is safer.
+          // But for now, let's route to Register to match the flow requested.
+          // Or better, route to a landing that allows both.
+          // I'll route to Register as it's the screen I just built.
+          router.replace("/onboarding/register"); 
+        } else {
+          // New user -> Onboarding
+          router.replace("/onboarding");
+        }
       }
       setLoading(false);
     };
 
-    checkFirstOpen();
+    checkSession();
   }, []);
 
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color="#2563EB" />
       </View>
     );
   }
