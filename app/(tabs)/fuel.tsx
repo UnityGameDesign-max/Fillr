@@ -2,7 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useState } from 'react';
-import { FlatList, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { FUEL_LOGS, FUEL_STATIONS } from "@/data/fuel";
@@ -41,10 +41,18 @@ export default function Fuel() {
       <View className="flex-row items-center mt-3">
         {/* Brand Icon Placeholder */}
         <View 
-          className="w-12 h-12 rounded-full items-center justify-center mr-3"
+          className="w-12 h-12 rounded-full items-center justify-center mr-3 overflow-hidden"
           style={{ backgroundColor: `${item.brandColor}15` }}
         >
-           <MaterialCommunityIcons name="gas-station" size={24} color={item.brandColor} />
+           {FUEL_STATIONS.find(s => s.id === item.logoType)?.image ? (
+             <Image 
+               source={{ uri: FUEL_STATIONS.find(s => s.id === item.logoType)?.image }} 
+               style={{ width: 32, height: 32, borderRadius: 16 }}
+               resizeMode="contain"
+             />
+           ) : (
+             <MaterialCommunityIcons name="gas-station" size={24} color={item.brandColor} />
+           )}
         </View>
         
         <View>
@@ -135,11 +143,19 @@ export default function Fuel() {
                          : 'bg-muted border-transparent'
                      }`}
                    >
-                     <MaterialCommunityIcons 
-                       name={station.icon as any} 
-                       size={32} 
-                       color={selectedStation === station.id ? station.color : '#9CA3AF'} 
-                     />
+                     {station.image ? (
+                       <Image 
+                         source={{ uri: station.image }} 
+                         style={{ width: 40, height: 40 }}
+                         resizeMode="contain"
+                       />
+                     ) : (
+                       <MaterialCommunityIcons 
+                         name={station.icon as any} 
+                         size={32} 
+                         color={selectedStation === station.id ? station.color : '#9CA3AF'} 
+                       />
+                     )}
                      {selectedStation === station.id && (
                         <Text 
                           className="text-xs font-medium mt-1" 

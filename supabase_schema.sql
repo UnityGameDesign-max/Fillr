@@ -6,6 +6,8 @@ create table if not exists public.profiles (
   province text,
   target_profit_amount numeric,
   target_profit_period text,
+  weekly_earnings numeric,
+  earnings_includes_cash_card boolean default false,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );

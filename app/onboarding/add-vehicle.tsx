@@ -31,6 +31,8 @@ export default function AddVehicle() {
     fuelType &&
     odometer.trim();
 
+  const totalSteps = onboardingStore.role === "EHAILING" ? 5 : 3;
+
   const handleContinue = async () => {
     if (!isValid) return;
 
@@ -42,10 +44,12 @@ export default function AddVehicle() {
       fuelType: fuelType!,
       odometer: parseInt(odometer.trim()),
     };
-    onboardingStore.currentStep = 4;
+    
     if (onboardingStore.role === "EHAILING") {
-      router.replace("/onboarding/target-profit");
+      onboardingStore.currentStep = 4;
+      router.replace("/onboarding/weekly-earnings");
     } else {
+      onboardingStore.currentStep = 4;
       router.replace("/onboarding/insights-loading");
     }
   };
@@ -65,9 +69,9 @@ export default function AddVehicle() {
           <Ionicons name="arrow-back" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
         </Pressable>
         <View className="mb-6">
-          <ProgressSegments current={3} total={3} className="mb-3" />
+          <ProgressSegments current={3} total={totalSteps} className="mb-3" />
           <AppText className="text-sm font-medium text-muted-foreground mb-1">
-            Question 3/3
+            Question 3/{totalSteps}
           </AppText>
           <AppText className="text-3xl font-bold text-foreground mb-1">
             Add Your Vehicle

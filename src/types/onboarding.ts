@@ -11,6 +11,7 @@ export interface RoleOption {
   iconName: any;
   iconColor: string;
   iconBg: string;
+  disabled?: boolean;
 }
 
 export interface ProvinceOption {

@@ -47,6 +47,7 @@ export const ROLES: RoleOption[] = [
     iconName: "business",
     iconColor: "#007BFF",
     iconBg: "bg-blue-100",
+    disabled: true,
   },
 ];
 

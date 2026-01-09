@@ -14,6 +14,8 @@ export const onboardingStore = proxy({
     odometer: number;
   } | null,
   role: null as string | null,
+  weeklyEarnings: null as number | null,
+  earningsIncludesCashAndCard: false,
   targetProfit: null as {
     period: "daily" | "weekly" | "monthly";
     amount: number;

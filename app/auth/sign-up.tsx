@@ -95,6 +95,8 @@ export default function SignUp() {
             province: snap.province,
             target_profit_amount: snap.targetProfit?.amount,
             target_profit_period: snap.targetProfit?.period,
+            weekly_earnings: snap.weeklyEarnings,
+            earnings_includes_cash_card: snap.earningsIncludesCashAndCard,
             updated_at: new Date(),
           });
         
@@ -177,11 +179,14 @@ export default function SignUp() {
       email: email,
       password: password,
       options: {
+        emailRedirectTo: 'fillr://auth/verify-email',
         data: {
           role: snap.role || 'SOLO',
           province: snap.province,
           target_profit_amount: snap.targetProfit?.amount,
           target_profit_period: snap.targetProfit?.period,
+          weekly_earnings: snap.weeklyEarnings,
+          earnings_includes_cash_card: snap.earningsIncludesCashAndCard,
           vehicle: snap.vehicle ? {
             make: snap.vehicle.make,
             model: snap.vehicle.model,

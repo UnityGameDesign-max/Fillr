@@ -1,8 +1,9 @@
 import { AppText } from "@/components/shared/AppText";
 import { supabase } from "@/lib/supabase";
+import * as Linking from 'expo-linking';
 import { router, useLocalSearchParams } from "expo-router";
 import { useColorScheme } from "nativewind";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -30,6 +31,57 @@ export default function VerifyEmail() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Handle the deep link if the session isn't automatically established
+    const handleDeepLink = async () => {
+      const url = await Linking.getInitialURL();
+      if (url) {
+        handleUrl(url);
+      }
+      
+      const sub = Linking.addEventListener('url', ({ url }) => {
+        handleUrl(url);
+      });
+
+      return () => {
+        sub.remove();
+      };
+    };
+
+    handleDeepLink();
+  }, []);
+
+  const handleUrl = async (url: string) => {
+    // Check if the URL contains access_token and refresh_token (hash fragment)
+    if (url.includes('access_token') && url.includes('refresh_token')) {
+        const hashIndex = url.indexOf('#');
+        if (hashIndex !== -1) {
+            const hash = url.substring(hashIndex + 1);
+            const params = new URLSearchParams(hash);
+            const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+
+            if (accessToken && refreshToken) {
+                setLoading(true);
+                const { error } = await supabase.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                });
+                
+                if (error) {
+                    console.error("Error setting session", error);
+                    setError("Failed to verify email from link.");
+                    setLoading(false);
+                } else {
+                    // Success
+                    await supabase.auth.refreshSession(); // Ensure session is fresh
+                    router.replace("/(tabs)");
+                }
+            }
+        }
+    }
+  };
 
   const handleVerify = async () => {
     if (!code || code.length < 6) {

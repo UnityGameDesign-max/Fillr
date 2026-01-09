@@ -196,9 +196,7 @@ export default function SignIn() {
           </Pressable>
         </View>
 
-        {/* Form */}
         <View className="gap-5">
-          {/* Email */}
           <View>
             <AppText className="text-sm font-semibold text-foreground mb-2">
               Email Address
@@ -214,13 +212,12 @@ export default function SignIn() {
             />
           </View>
 
-          {/* Password */}
           <View>
             <View className="flex-row justify-between items-center mb-2">
                 <AppText className="text-sm font-semibold text-foreground">
                 Password
                 </AppText>
-                <Pressable>
+                <Pressable onPress={() => router.push("/auth/forgot-password")}>
                     <AppText className="text-primary text-sm font-medium">Forgot Password?</AppText>
                 </Pressable>
             </View>
@@ -270,7 +267,6 @@ export default function SignIn() {
             </View>
           )}
 
-          {/* Sign In Button */}
           <Pressable
             onPress={handleLogin}
             disabled={loading}

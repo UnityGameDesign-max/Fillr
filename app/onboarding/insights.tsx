@@ -42,7 +42,7 @@ export default function Insights() {
 
   const handleBack = () => {
     if (snap.role === "EHAILING") {
-      onboardingStore.currentStep = 4;
+      onboardingStore.currentStep = 5;
       router.replace("/onboarding/target-profit");
     } else {
       onboardingStore.currentStep = 3;

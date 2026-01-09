@@ -38,9 +38,27 @@ export const FUEL_LOGS: FuelLog[] = [
 
 export const FUEL_STATIONS: FuelStation[] = [
   { id: 'sasol', name: 'Sasol', color: '#009FDA', icon: 'gas-station' },
-  { id: 'bp', name: 'BP', color: '#15803D', icon: 'flower' },
-  { id: 'shell', name: 'Shell', color: '#F59E0B', icon: 'shell' },
-  { id: 'engen', name: 'Engen', color: '#1E3A8A', icon: 'gas-station' },
+  { 
+    id: 'bp', 
+    name: 'BP', 
+    color: '#15803D', 
+    icon: 'flower',
+    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d2/BP_Helios_logo.svg/200px-BP_Helios_logo.svg.png'
+  },
+  { 
+    id: 'shell', 
+    name: 'Shell', 
+    color: '#F59E0B', 
+    icon: 'shell',
+    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e8/Shell_logo.svg/200px-Shell_logo.svg.png'
+  },
+  { 
+    id: 'engen', 
+    name: 'Engen', 
+    color: '#1E3A8A', 
+    icon: 'gas-station',
+    image: 'https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/Engen_Petroleum_logo.svg/200px-Engen_Petroleum_logo.svg.png'
+  },
   { id: 'caltex', name: 'Caltex', color: '#EF4444', icon: 'star' },
   { id: 'total', name: 'Total', color: '#F97316', icon: 'fire' },
 ];

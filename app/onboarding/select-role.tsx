@@ -58,14 +58,18 @@ export default function SelectRole() {
       >
         {ROLES.map((opt) => {
           const isSelected = selected === opt.id;
+          const isDisabled = opt.disabled;
           return (
             <Pressable
               key={opt.id}
+              disabled={isDisabled}
               onPress={() => setSelected(opt.id)}
-              className={`w-full p-4 rounded-2xl mb-3 border-2
+              className={`w-full p-4 rounded-2xl mb-3 border-2 relative
               ${
                 isSelected
                   ? "border-green-500 bg-green-500/10"
+                  : isDisabled
+                  ? "border-border/50 bg-card/50 opacity-60"
                   : "border-border bg-card"
               }`}
             >
@@ -76,9 +80,16 @@ export default function SelectRole() {
                   <Ionicons name={opt.iconName} size={22} color={opt.iconColor} />
                 </View>
                 <View className="flex-1">
-                  <AppText className="text-lg font-semibold text-foreground">
-                    {opt.title}
-                  </AppText>
+                  <View className="flex-row items-center gap-2">
+                    <AppText className="text-lg font-semibold text-foreground">
+                        {opt.title}
+                    </AppText>
+                    {isDisabled && (
+                        <View className="bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
+                            <AppText className="text-[10px] font-bold text-primary uppercase">Coming Soon</AppText>
+                        </View>
+                    )}
+                  </View>
                   <AppText className="text-muted-foreground mt-1 text-sm">
                     {opt.desc}
                   </AppText>

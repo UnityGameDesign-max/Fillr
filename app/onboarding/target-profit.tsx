@@ -1,3 +1,4 @@
+import ProgressSegments from "@/components/onboarding/ProgressSegments";
 import { AppText } from "@/components/shared/AppText";
 import { PROFIT_RANGES } from "@/data/onboarding";
 import { onboardingStore } from "@/store/onboardingStore";
@@ -48,8 +49,13 @@ export default function TargetProfit() {
   };
 
   const handleBack = () => {
-    onboardingStore.currentStep = 3;
-    router.replace("/onboarding/add-vehicle");
+    if (onboardingStore.role === "EHAILING") {
+      onboardingStore.currentStep = 4;
+      router.replace("/onboarding/weekly-earnings");
+    } else {
+      onboardingStore.currentStep = 3;
+      router.replace("/onboarding/add-vehicle");
+    }
   };
 
   const formatCurrency = (amount: number) => {
@@ -72,6 +78,10 @@ export default function TargetProfit() {
           <Ionicons name="arrow-back" size={24} color={foregroundColor} />
         </Pressable>
         <View className="mb-6">
+          <ProgressSegments current={5} total={5} className="mb-3" />
+          <AppText className="text-sm font-medium text-muted-foreground mb-1">
+            Question 5/5
+          </AppText>
           <AppText className="text-3xl font-bold text-foreground mb-1">
             Set Your Target Profit
           </AppText>
