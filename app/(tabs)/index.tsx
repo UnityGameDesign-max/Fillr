@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -29,37 +30,37 @@ const InfoBottomSheet = ({ visible, onClose }: { visible: boolean; onClose: () =
           <View className="absolute inset-0" />
         </TouchableWithoutFeedback>
         
-        <View className="bg-white rounded-t-3xl p-6 pb-10 shadow-2xl">
+        <View className="bg-background rounded-t-3xl p-6 pb-10 shadow-2xl">
           <View className="items-center mb-4">
-            <View className="w-12 h-1.5 bg-gray-200 rounded-full" />
+            <View className="w-12 h-1.5 bg-muted rounded-full" />
           </View>
           
-          <Text className="text-xl font-bold text-gray-900 mb-6 text-center">
+          <Text className="text-xl font-bold text-foreground mb-6 text-center">
             Setting Realistic Targets
           </Text>
           
           <View className="gap-6">
              <View className="flex-row gap-4">
-                 <View className="w-2 h-2 rounded-full bg-blue-500 mt-2" />
-                 <Text className="text-gray-600 flex-1 text-base leading-6">
+                 <View className="w-2 h-2 rounded-full bg-primary mt-2" />
+                 <Text className="text-muted-foreground flex-1 text-base leading-6">
                     Consider your typical working hours and days per week
                  </Text>
              </View>
              <View className="flex-row gap-4">
-                 <View className="w-2 h-2 rounded-full bg-blue-500 mt-2" />
-                 <Text className="text-gray-600 flex-1 text-base leading-6">
+                 <View className="w-2 h-2 rounded-full bg-primary mt-2" />
+                 <Text className="text-muted-foreground flex-1 text-base leading-6">
                     Factor in fuel costs, maintenance, and other expenses
                  </Text>
              </View>
              <View className="flex-row gap-4">
-                 <View className="w-2 h-2 rounded-full bg-blue-500 mt-2" />
-                 <Text className="text-gray-600 flex-1 text-base leading-6">
+                 <View className="w-2 h-2 rounded-full bg-primary mt-2" />
+                 <Text className="text-muted-foreground flex-1 text-base leading-6">
                     Review and adjust targets monthly based on performance
                  </Text>
              </View>
              <View className="flex-row gap-4">
-                 <View className="w-2 h-2 rounded-full bg-blue-500 mt-2" />
-                 <Text className="text-gray-600 flex-1 text-base leading-6">
+                 <View className="w-2 h-2 rounded-full bg-primary mt-2" />
+                 <Text className="text-muted-foreground flex-1 text-base leading-6">
                     Daily targets should align with weekly and monthly goals
                  </Text>
              </View>
@@ -67,9 +68,9 @@ const InfoBottomSheet = ({ visible, onClose }: { visible: boolean; onClose: () =
 
           <Pressable 
             onPress={onClose}
-            className="bg-blue-600 py-4 rounded-xl items-center mt-8"
+            className="bg-primary py-4 rounded-xl items-center mt-8"
           >
-            <Text className="text-white font-bold text-lg">Got it</Text>
+            <Text className="text-primary-foreground font-bold text-lg">Got it</Text>
           </Pressable>
         </View>
       </View>
@@ -78,6 +79,9 @@ const InfoBottomSheet = ({ visible, onClose }: { visible: boolean; onClose: () =
 };
 
 const Header = ({ name }: { name: string }) => {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
   const date = new Date().toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
@@ -88,7 +92,7 @@ const Header = ({ name }: { name: string }) => {
     <View className="flex-row justify-between items-start mb-6">
       <View>
         <View className="flex-row items-center gap-2 mb-1">
-            <View className="w-8 h-8 text-white rounded-full items-center justify-center">
+            <View className="w-8 h-8 text-foreground rounded-full items-center justify-center">
                  {/* Placeholder Avatar */}
                  <Image 
                     source={{ uri: `https://ui-avatars.com/api/?name=${name}&background=random` }} 
@@ -96,13 +100,13 @@ const Header = ({ name }: { name: string }) => {
                  />
             </View>
         </View>
-        <Text className="text-2xl font-bold text-gray-900">
+        <Text className="text-2xl font-bold text-foreground">
           Good Morning, {name}
         </Text>
-        <Text className="text-gray-500 text-sm mt-1">{date}</Text>
+        <Text className="text-muted-foreground text-sm mt-1">{date}</Text>
       </View>
-      <Pressable className="p-2 bg-white rounded-full shadow-sm">
-        <Ionicons name="notifications-outline" size={24} color="#1F2937" />
+      <Pressable className="p-2 bg-background rounded-full shadow-sm">
+        <Ionicons name="notifications-outline" size={24} color={isDark ? "#FFF" : "#1F2937"} />
       </Pressable>
     </View>
   );
@@ -112,8 +116,8 @@ const Header = ({ name }: { name: string }) => {
 
 const RideShareDashboard = ({ name }: { name: string }) => {
   const [infoVisible, setInfoVisible] = useState(false);
-
-
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   const getMood = (earning: number, fuel: number) => {
      if (earning >= fuel * 2) return '😃'; // Great profit
@@ -127,52 +131,52 @@ const RideShareDashboard = ({ name }: { name: string }) => {
 
       {/* Stats Row 1 */}
       <View className="flex-row gap-4 mb-4">
-        <View className="flex-1 bg-white p-4 rounded-2xl shadow-sm">
+        <View className="flex-1 bg-background p-4 rounded-2xl shadow-sm">
           <View className="flex-row justify-between items-start mb-1">
-              <Text className="text-gray-500 text-xs font-medium">Total Earnings</Text>
+              <Text className="text-muted-foreground text-xs font-medium">Total Earnings</Text>
               <Text>💰</Text>
           </View>
-          <Text className="text-xl font-bold text-gray-900">R 1,250.00</Text>
+          <Text className="text-xl font-bold text-foreground">R 1,250.00</Text>
         </View>
-        <View className="flex-1 bg-white p-4 rounded-2xl shadow-sm">
+        <View className="flex-1 bg-background p-4 rounded-2xl shadow-sm">
           <View className="flex-row justify-between items-start mb-1">
-              <Text className="text-gray-500 text-xs font-medium">Fuel Cost</Text>
+              <Text className="text-muted-foreground text-xs font-medium">Fuel Cost</Text>
               <Text>⛽</Text>
           </View>
-          <Text className="text-xl font-bold text-gray-900">R 320.50</Text>
+          <Text className="text-xl font-bold text-foreground">R 320.50</Text>
         </View>
       </View>
 
 
 
       {/* Net Profit Today */}
-      <View className="bg-emerald-50 p-5 rounded-2xl mb-4 border border-emerald-100">
-        <Text className="text-emerald-600 font-medium mb-1">Net Profit Today</Text>
-        <Text className="text-4xl font-bold text-emerald-700">R 929.50</Text>
+      <View className="bg-secondary/10 p-5 rounded-2xl mb-4 border border-secondary/20">
+        <Text className="text-secondary font-medium mb-1">Net Profit Today</Text>
+        <Text className="text-4xl font-bold text-secondary">R 929.50</Text>
       </View>
 
       {/* Daily Profit Target */}
-      <View className="bg-white p-5 rounded-2xl shadow-sm mb-6">
+      <View className="bg-background p-5 rounded-2xl shadow-sm mb-6">
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-gray-900 font-bold text-base">Daily Profit Target</Text>
-          <Text className="text-gray-400 font-medium text-sm">R929.50 / R1,200</Text>
+          <Text className="text-foreground font-bold text-base">Daily Profit Target</Text>
+          <Text className="text-muted-foreground font-medium text-sm">R929.50 / R1,200</Text>
         </View>
         
-        <View className="h-3 bg-gray-100 rounded-full overflow-hidden mb-3">
-          <View className="h-full bg-emerald-500 rounded-full" style={{ width: '77%' }} />
+        <View className="h-3 bg-muted rounded-full overflow-hidden mb-3">
+          <View className="h-full bg-secondary rounded-full" style={{ width: '77%' }} />
         </View>
         
-        <Text className="text-emerald-500 font-medium text-center text-sm">R 270.50 to go!</Text>
+        <Text className="text-secondary font-medium text-center text-sm">R 270.50 to go!</Text>
       </View>
 
       <InfoBottomSheet visible={infoVisible} onClose={() => setInfoVisible(false)} />
 
       {/* Earnings vs Fuel Graph (Mock) */}
-      <View className="bg-white p-5 rounded-2xl shadow-sm mb-6">
+      <View className="bg-background p-5 rounded-2xl shadow-sm mb-6">
         <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-gray-900 font-semibold">Earnings vs Fuel Cost</Text>
+            <Text className="text-foreground font-semibold">Earnings vs Fuel Cost</Text>
         </View>
-        <Text className="text-gray-500 text-xs mb-4">Last 7 Days (21 - 28 May) <Text className="text-green-500">+12%</Text></Text>
+        <Text className="text-muted-foreground text-xs mb-4">Last 7 Days (21 - 28 May) <Text className="text-secondary">+12%</Text></Text>
         
         <View className="flex-row justify-between items-end h-40 px-2">
             {[
@@ -190,32 +194,32 @@ const RideShareDashboard = ({ name }: { name: string }) => {
 
                     {/* Bars */}
                     <View className="items-center gap-1">
-                        <View className="w-8 bg-blue-100 rounded-t-sm" style={{ height: item.fuel }} />
-                        <View className="w-8 bg-green-500 rounded-b-sm" style={{ height: item.earning }} />
+                        <View className="w-8 bg-primary/20 rounded-t-sm" style={{ height: item.fuel }} />
+                        <View className="w-8 bg-secondary rounded-b-sm" style={{ height: item.earning }} />
                     </View>
-                    <Text className="text-gray-400 text-xs">{item.day}</Text>
+                    <Text className="text-muted-foreground text-xs">{item.day}</Text>
                 </View>
             ))}
         </View>
       </View>
 
       {/* Avg Profit per Trip */}
-      <View className="bg-white p-4 rounded-2xl shadow-sm mb-6 flex-row items-center justify-between">
+      <View className="bg-background p-4 rounded-2xl shadow-sm mb-6 flex-row items-center justify-between">
          <View className="flex-row items-center gap-3">
-            <View className="w-12 h-12 bg-indigo-50 rounded-xl items-center justify-center">
-                <Ionicons name="stats-chart" size={24} color="#4F46E5" />
+            <View className="w-12 h-12 bg-primary/10 rounded-xl items-center justify-center">
+                <Ionicons name="stats-chart" size={24} color={isDark ? "#60A5FA" : "#4F46E5"} />
             </View>
             <View>
-                <Text className="text-gray-900 font-semibold">Avg. Profit per Trip</Text>
-                <Text className="text-gray-500 text-xs">Based on 15 trips today</Text>
+                <Text className="text-foreground font-semibold">Avg. Profit per Trip</Text>
+                <Text className="text-muted-foreground text-xs">Based on 15 trips today</Text>
             </View>
          </View>
-         <Text className="text-indigo-600 font-bold text-lg">R 61.96</Text>
+         <Text className="text-primary font-bold text-lg">R 61.96</Text>
       </View>
 
       {/* Recent Activity */}
       <View className="mb-8">
-        <Text className="text-gray-900 font-semibold text-lg mb-4">Recent Activity</Text>
+        <Text className="text-foreground font-semibold text-lg mb-4">Recent Activity</Text>
         <View className="gap-3">
             <ActivityItem 
                 icon="car" 
@@ -245,75 +249,83 @@ const RideShareDashboard = ({ name }: { name: string }) => {
   );
 };
 
-const ActivityItem = ({ icon, title, time, amount, isPositive, iconType = "ion" }: any) => (
+const ActivityItem = ({ icon, title, time, amount, isPositive, iconType = "ion" }: any) => {
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
+    
+    return (
     <View className="flex-row items-center justify-between bg-transparent">
         <View className="flex-row items-center gap-3">
-            <View className={`w-10 h-10 rounded-full items-center justify-center ${isPositive ? 'bg-green-100' : 'bg-orange-100'}`}>
+            <View className={`w-10 h-10 rounded-full items-center justify-center ${isPositive ? 'bg-secondary/20' : 'bg-destructive/20'}`}>
                 {iconType === 'ion' ? (
-                     <Ionicons name={icon} size={20} color={isPositive ? "#059669" : "#D97706"} />
+                     <Ionicons name={icon} size={20} color={isPositive ? (isDark ? "#4ADE80" : "#059669") : (isDark ? "#F87171" : "#D97706")} />
                 ) : (
-                    <MaterialCommunityIcons name={icon} size={20} color={isPositive ? "#059669" : "#D97706"} />
+                    <MaterialCommunityIcons name={icon} size={20} color={isPositive ? (isDark ? "#4ADE80" : "#059669") : (isDark ? "#F87171" : "#D97706")} />
                 )}
             </View>
             <View>
-                <Text className="text-gray-900 font-medium">{title}</Text>
-                <Text className="text-gray-500 text-xs">{time}</Text>
+                <Text className="text-foreground font-medium">{title}</Text>
+                <Text className="text-muted-foreground text-xs">{time}</Text>
             </View>
         </View>
-        <Text className={`font-semibold ${isPositive ? 'text-green-600' : 'text-red-500'}`}>{amount}</Text>
+        <Text className={`font-semibold ${isPositive ? 'text-secondary' : 'text-destructive'}`}>{amount}</Text>
     </View>
-);
+    );
+};
 
 // --- Regular Driver Dashboard ---
 
 const RegularDashboard = ({ name }: { name: string }) => {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   return (
     <View>
        <Header name={name} />
 
         {/* Stats Row */}
        <View className="flex-row gap-4 mb-4">
-        <View className="flex-1 bg-white p-4 rounded-2xl shadow-sm">
-          <Text className="text-gray-500 text-xs font-medium mb-1">Fuel Consumption</Text>
+        <View className="flex-1 bg-background p-4 rounded-2xl shadow-sm">
+          <Text className="text-muted-foreground text-xs font-medium mb-1">Fuel Consumption</Text>
           <View className="flex-row items-baseline gap-1">
-             <Text className="text-2xl font-bold text-gray-900">14.2</Text>
-             <Text className="text-gray-500 text-sm">km/L</Text>
+             <Text className="text-2xl font-bold text-foreground">14.2</Text>
+             <Text className="text-muted-foreground text-sm">km/L</Text>
           </View>
         </View>
-        <View className="flex-1 bg-white p-4 rounded-2xl shadow-sm">
-          <Text className="text-gray-500 text-xs font-medium mb-1">Cost/Kilometer</Text>
+        <View className="flex-1 bg-background p-4 rounded-2xl shadow-sm">
+          <Text className="text-muted-foreground text-xs font-medium mb-1">Cost/Kilometer</Text>
           <View className="flex-row items-baseline gap-1">
-             <Text className="text-2xl font-bold text-gray-900">R2.10</Text>
-             <Text className="text-gray-500 text-sm">/km</Text>
+             <Text className="text-2xl font-bold text-foreground">R2.10</Text>
+             <Text className="text-muted-foreground text-sm">/km</Text>
           </View>
         </View>
       </View>
 
-      <View className="bg-white p-4 rounded-2xl shadow-sm mb-6">
-          <Text className="text-gray-500 text-xs font-medium mb-1">This Month's Fuel Spend</Text>
-          <Text className="text-3xl font-bold text-gray-900">R1,850.75</Text>
+      <View className="bg-background p-4 rounded-2xl shadow-sm mb-6">
+          <Text className="text-muted-foreground text-xs font-medium mb-1">This Month's Fuel Spend</Text>
+          <Text className="text-3xl font-bold text-foreground">R1,850.75</Text>
       </View>
 
       {/* Map Card */}
-      <View className="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
-        <View className="h-32 bg-blue-100 relative">
+      <View className="bg-background rounded-2xl shadow-sm overflow-hidden mb-6">
+        <View className="h-32 bg-primary/20 relative">
             {/* Placeholder Map */}
              <Image 
                 source={{ uri: "https://maps.googleapis.com/maps/api/staticmap?center=-26.1076,28.0567&zoom=13&size=600x300&maptype=roadmap&key=YOUR_API_KEY_HERE" }} // Mock
                 className="w-full h-full opacity-50"
              />
              <View className="absolute inset-0 items-center justify-center">
-                 <Ionicons name="map" size={40} color="#3B82F6" opacity={0.5} />
+                 <Ionicons name="map" size={40} color={isDark ? "#60A5FA" : "#3B82F6"} opacity={0.5} />
              </View>
         </View>
         <View className="p-4">
-            <Text className="text-gray-500 text-xs font-medium mb-1">Today's Summary</Text>
-            <Text className="text-xl font-bold text-gray-900 mb-4">45 km driven across 3 trips</Text>
+            <Text className="text-muted-foreground text-xs font-medium mb-1">Today's Summary</Text>
+            <Text className="text-xl font-bold text-foreground mb-4">45 km driven across 3 trips</Text>
             
             <View className="flex-row justify-between items-center">
-                 <Text className="text-gray-500 font-medium">Est. fuel cost: R94.50</Text>
-                 <Pressable className="bg-green-500 px-4 py-2 rounded-lg">
-                    <Text className="text-white font-semibold">View Trips</Text>
+                 <Text className="text-muted-foreground font-medium">Est. fuel cost: R94.50</Text>
+                 <Pressable className="bg-secondary px-4 py-2 rounded-lg">
+                    <Text className="text-secondary-foreground font-semibold">View Trips</Text>
                  </Pressable>
             </View>
         </View>
@@ -321,40 +333,40 @@ const RegularDashboard = ({ name }: { name: string }) => {
 
       {/* Actions */}
       <View className="flex-row gap-4 mb-6">
-        <Pressable className="flex-1 bg-green-100 py-4 rounded-xl items-center justify-center gap-2">
-            <Ionicons name="add-circle-outline" size={24} color="#059669" />
-            <Text className="text-green-700 font-semibold">Log New Trip</Text>
+        <Pressable className="flex-1 bg-secondary/20 py-4 rounded-xl items-center justify-center gap-2">
+            <Ionicons name="add-circle-outline" size={24} color={isDark ? "#4ADE80" : "#059669"} />
+            <Text className="text-secondary font-semibold">Log New Trip</Text>
         </Pressable>
-        <Pressable className="flex-1 bg-blue-100 py-4 rounded-xl items-center justify-center gap-2">
-            <MaterialCommunityIcons name="gas-station" size={24} color="#2563EB" />
-            <Text className="text-blue-700 font-semibold">Add Fuel-Up</Text>
+        <Pressable className="flex-1 bg-primary/20 py-4 rounded-xl items-center justify-center gap-2">
+            <MaterialCommunityIcons name="gas-station" size={24} color={isDark ? "#60A5FA" : "#2563EB"} />
+            <Text className="text-primary font-semibold">Add Fuel-Up</Text>
         </Pressable>
       </View>
 
       {/* Fuel Saving Tip */}
-      <View className="bg-white p-5 rounded-2xl shadow-sm mb-6 border-l-4 border-blue-500">
-        <Text className="text-blue-500 text-xs font-bold mb-1 uppercase">Fuel Saving Tip</Text>
-        <Text className="text-gray-900 font-bold text-lg mb-2">Avoid harsh acceleration to save up to 15% on fuel</Text>
-        <Text className="text-gray-500 leading-5">Maintaining a steady speed is key. Gentle starts and stops make a big difference to your efficiency.</Text>
+      <View className="bg-background p-5 rounded-2xl shadow-sm mb-6 border-l-4 border-primary">
+        <Text className="text-primary text-xs font-bold mb-1 uppercase">Fuel Saving Tip</Text>
+        <Text className="text-foreground font-bold text-lg mb-2">Avoid harsh acceleration to save up to 15% on fuel</Text>
+        <Text className="text-muted-foreground leading-5">Maintaining a steady speed is key. Gentle starts and stops make a big difference to your efficiency.</Text>
       </View>
 
        {/* Consumption Graph */}
-       <View className="bg-white p-5 rounded-2xl shadow-sm mb-8">
+       <View className="bg-background p-5 rounded-2xl shadow-sm mb-8">
          <View className="flex-row justify-between items-center mb-4">
-             <Text className="text-gray-900 font-semibold">Consumption (Last 7 Days)</Text>
+             <Text className="text-foreground font-semibold">Consumption (Last 7 Days)</Text>
          </View>
          <View className="flex-row items-baseline gap-2 mb-4">
-            <Text className="text-3xl font-bold text-gray-900">14.5</Text>
-            <Text className="text-gray-500 text-sm">km/L</Text>
-            <Text className="text-green-500 text-sm font-medium">+2.5%</Text>
+            <Text className="text-3xl font-bold text-foreground">14.5</Text>
+            <Text className="text-muted-foreground text-sm">km/L</Text>
+            <Text className="text-secondary text-sm font-medium">+2.5%</Text>
          </View>
          
          {/* Simple Line Graph Placeholder */}
          <View className="h-32 flex-row items-end justify-between px-2">
             {[40, 60, 50, 80, 70, 40, 90].map((h, i) => (
                  <View key={i} className="items-center gap-2">
-                    <View className="w-1 bg-green-400 rounded-full" style={{ height: `${h}%` }} />
-                    <Text className="text-gray-400 text-xs">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</Text>
+                    <View className="w-1 bg-secondary rounded-full" style={{ height: `${h}%` }} />
+                    <Text className="text-muted-foreground text-xs">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</Text>
                  </View>
             ))}
          </View>
@@ -415,14 +427,14 @@ export default function Home() {
 
   if (loading && !refreshing) {
       return (
-          <SafeAreaView className="flex-1 bg-[#F8F9FB] items-center justify-center">
+          <SafeAreaView className="flex-1 bg-card items-center justify-center">
               <ActivityIndicator size="large" color="#2563EB" />
           </SafeAreaView>
       )
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-card" edges={['top']}>
       <ScrollView 
         contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}

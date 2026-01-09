@@ -1,9 +1,9 @@
 import React from "react";
 import { ImageURISource, useWindowDimensions, View } from "react-native";
 import Animated, {
-  interpolate,
-  SharedValue,
-  useAnimatedStyle,
+    interpolate,
+    SharedValue,
+    useAnimatedStyle,
 } from "react-native-reanimated";
 
 type Props = {
@@ -47,14 +47,14 @@ export default function ListItem({ item, index, x }: Props) {
     <View className=" items-center justify-center" style={{ width: SCREEN_WIDTH }}>
       <Animated.Image source={item.image} resizeMode="contain" style={imageStyle} />
       <Animated.Text
-        className="font-bold text-center text-[34px] leading-[41px] px-5 pb-5"
+        className="font-bold text-center text-[34px] leading-[41px] px-5 pb-5 text-foreground"
         style={textStyle}
       >
         {item.title}
       </Animated.Text>
 
       <Animated.Text
-       className="text-center font-medium text-[16px] leading-[22px] text-gray-600 py-3 px-7"
+       className="text-center font-medium text-[16px] leading-[22px] text-muted-foreground py-3 px-7"
        style={textStyle}
       >{item.description}</Animated.Text>
     </View>

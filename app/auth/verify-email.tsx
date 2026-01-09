@@ -1,6 +1,7 @@
 import { AppText } from "@/components/shared/AppText";
 import { supabase } from "@/lib/supabase";
 import { router, useLocalSearchParams } from "expo-router";
+import { useColorScheme } from "nativewind";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -15,14 +16,29 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VerifyEmail() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
+  // Theme colors
+  const primaryColor = isDark ? "#0A84FF" : "#007AFF";
+  const mutedColor = isDark ? "#CCCCCC" : "#6B7280";
+
   const { email } = useLocalSearchParams<{ email: string }>();
+  // Ensure email is a string
+  const emailStr = Array.isArray(email) ? email[0] : email;
+
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleVerify = async () => {
     if (!code || code.length < 6) {
-      setError("Please enter a valid 6-digit code.");
+      setError("Please enter a valid verification code.");
+      return;
+    }
+
+    if (!emailStr) {
+      setError("Email address is missing.");
       return;
     }
 
@@ -31,7 +47,7 @@ export default function VerifyEmail() {
 
     try {
       const { data, error } = await supabase.auth.verifyOtp({
-        email,
+        email: emailStr,
         token: code,
         type: "signup",
       });
@@ -57,10 +73,11 @@ export default function VerifyEmail() {
   };
 
   const handleResend = async () => {
+    if (!emailStr) return;
     try {
       const { error } = await supabase.auth.resend({
         type: 'signup',
-        email,
+        email: emailStr,
       });
       if (error) throw error;
       alert("Verification code resent! Please check your email (and spam folder).");
@@ -71,7 +88,7 @@ export default function VerifyEmail() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]">
+    <SafeAreaView className="flex-1 bg-background">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
@@ -82,42 +99,42 @@ export default function VerifyEmail() {
         >
           {/* Icon */}
           <View className="items-center mt-10 mb-8">
-            <View className="w-20 h-20 bg-blue-100 rounded-full items-center justify-center mb-6">
+            <View className="w-20 h-20 bg-primary/10 rounded-full items-center justify-center mb-6">
               <Image
                 source={require("../../assets/icons/adaptive-icon.png")} // Fallback icon or use a mail icon if available
-                style={{ width: 50, height: 50, tintColor: "#2563EB" }}
+                style={{ width: 50, height: 50, tintColor: primaryColor }}
                 resizeMode="contain"
               />
             </View>
-            <AppText className="text-2xl font-bold text-center text-gray-900 mb-2">
+            <AppText className="text-2xl font-bold text-center text-foreground mb-2">
               Verify Your Email
             </AppText>
-            <AppText className="text-center text-gray-500 leading-6">
+            <AppText className="text-center text-muted-foreground leading-6">
               We've sent a verification code to{"\n"}
-              <AppText className="font-bold text-gray-900">{email}</AppText>
+              <AppText className="font-bold text-foreground">{email}</AppText>
             </AppText>
           </View>
 
           {/* Input */}
-          <View className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
-            <AppText className="text-xs font-bold text-gray-400 uppercase mb-2">
+          <View className="bg-card p-4 rounded-xl shadow-sm border border-border mb-6">
+            <AppText className="text-xs font-bold text-muted-foreground uppercase mb-2">
               Verification Code
             </AppText>
             <TextInput
-              className="text-gray-900 text-lg font-medium h-12"
+              className="text-foreground text-lg font-medium h-12"
               placeholder="123456"
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={mutedColor}
               keyboardType="number-pad"
               value={code}
               onChangeText={setCode}
-              maxLength={6}
+              maxLength={10}
               autoFocus
             />
           </View>
 
           {error && (
-            <View className="bg-red-50 p-3 rounded-xl mb-6">
-              <AppText className="text-red-600 text-sm text-center">
+            <View className="bg-destructive/10 p-3 rounded-xl mb-6">
+              <AppText className="text-destructive text-sm text-center">
                 {error}
               </AppText>
             </View>
@@ -128,13 +145,13 @@ export default function VerifyEmail() {
             onPress={handleVerify}
             disabled={loading}
             className={`h-14 rounded-xl items-center justify-center mb-4 ${
-              loading ? "bg-blue-400" : "bg-blue-600"
+              loading ? "bg-primary/70" : "bg-primary"
             }`}
           >
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <AppText className="text-white font-semibold text-base">
+              <AppText className="text-primary-foreground font-semibold text-base">
                 Verify Email
               </AppText>
             )}
@@ -142,16 +159,16 @@ export default function VerifyEmail() {
 
           {/* Resend Link */}
           <Pressable onPress={handleResend} className="items-center py-4">
-            <AppText className="text-gray-500">
+            <AppText className="text-muted-foreground">
               Didn't receive the code?{" "}
-              <AppText className="text-blue-600 font-semibold">
+              <AppText className="text-primary font-semibold">
                 Resend
               </AppText>
             </AppText>
           </Pressable>
           
           <Pressable onPress={() => router.back()} className="items-center mt-2">
-             <AppText className="text-gray-400 text-sm">Back to Sign Up</AppText>
+             <AppText className="text-muted-foreground text-sm">Back to Sign Up</AppText>
           </Pressable>
 
         </ScrollView>

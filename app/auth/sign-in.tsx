@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,6 +17,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignIn() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
+  // Theme colors
+  const primaryColor = isDark ? "#0A84FF" : "#007AFF";
+  const foregroundColor = isDark ? "#FFFFFF" : "#1F2937";
+  const mutedColor = isDark ? "#CCCCCC" : "#6B7280";
+
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -143,11 +152,11 @@ export default function SignIn() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]">
+    <SafeAreaView className="flex-1 bg-background">
       {/* Reset Onboarding (Dev Only) */}
       <View className="absolute top-12 right-6 z-50">
         <Pressable onPress={resetOnboarding}>
-          <Ionicons name="refresh-circle" size={28} color="#9CA3AF" />
+          <Ionicons name="refresh-circle" size={28} color={mutedColor} />
         </Pressable>
       </View>
 
@@ -160,30 +169,30 @@ export default function SignIn() {
           <View className="w-16 h-16 rounded-2xl items-center justify-center mb-6">
             <Image
               source={require("../../assets/images/android-icon-monochrome.png")}
-              style={{ width: 100, height: 100 }}
+              style={{ width: 100, height: 100, tintColor: isDark ? "#FFFFFF" : undefined }}
               resizeMode="contain"
             />
           </View>
-          <AppText className="text-2xl font-bold text-center text-gray-900 mb-2">
+          <AppText className="text-2xl font-bold text-center text-foreground mb-2">
             Welcome Back!
           </AppText>
-          <AppText className="text-center text-gray-500 leading-6 px-4">
+          <AppText className="text-center text-muted-foreground leading-6 px-4">
             Sign in to manage your fleet or create a new account.
           </AppText>
         </View>
 
         {/* Tab Switcher */}
-        <View className="flex-row bg-gray-200 p-1 rounded-xl mb-6">
+        <View className="flex-row bg-muted p-1 rounded-xl mb-6">
           <Pressable
-            className="flex-1 py-3 items-center justify-center bg-white shadow-sm rounded-lg"
+            className="flex-1 py-3 items-center justify-center bg-card shadow-sm rounded-lg"
           >
-            <AppText className="text-gray-900 font-semibold">Sign In</AppText>
+            <AppText className="text-foreground font-semibold">Sign In</AppText>
           </Pressable>
           <Pressable
             onPress={() => router.replace("/auth/sign-up")}
             className="flex-1 py-3 items-center justify-center rounded-lg"
           >
-            <AppText className="text-gray-500 font-medium">Create Account</AppText>
+            <AppText className="text-muted-foreground font-medium">Create Account</AppText>
           </Pressable>
         </View>
 
@@ -191,15 +200,15 @@ export default function SignIn() {
         <View className="gap-5">
           {/* Email */}
           <View>
-            <AppText className="text-sm font-semibold text-gray-900 mb-2">
+            <AppText className="text-sm font-semibold text-foreground mb-2">
               Email Address
             </AppText>
             <TextInput
               value={emailOrPhone}
               onChangeText={setEmailOrPhone}
               placeholder="e.g. name@example.com"
-              className="w-full h-14 px-4 rounded-xl border border-gray-200 bg-white text-base text-gray-900"
-              placeholderTextColor="#9CA3AF"
+              className="w-full h-14 px-4 rounded-xl border border-input bg-card text-base text-foreground"
+              placeholderTextColor={mutedColor}
               autoCapitalize="none"
               keyboardType="email-address"
             />
@@ -208,11 +217,11 @@ export default function SignIn() {
           {/* Password */}
           <View>
             <View className="flex-row justify-between items-center mb-2">
-                <AppText className="text-sm font-semibold text-gray-900">
+                <AppText className="text-sm font-semibold text-foreground">
                 Password
                 </AppText>
                 <Pressable>
-                    <AppText className="text-blue-600 text-sm font-medium">Forgot Password?</AppText>
+                    <AppText className="text-primary text-sm font-medium">Forgot Password?</AppText>
                 </Pressable>
             </View>
             <View className="relative">
@@ -221,8 +230,8 @@ export default function SignIn() {
                 onChangeText={setPassword}
                 placeholder="Enter your password"
                 secureTextEntry={!showPass}
-                className="w-full h-14 px-4 pr-12 rounded-xl border border-gray-200 bg-white text-base text-gray-900"
-                placeholderTextColor="#9CA3AF"
+                className="w-full h-14 px-4 pr-12 rounded-xl border border-input bg-card text-base text-foreground"
+                placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
                 autoCapitalize="none"
               />
               <Pressable
@@ -232,7 +241,7 @@ export default function SignIn() {
                 <Ionicons
                   name={showPass ? "eye-off" : "eye"}
                   size={20}
-                  color="#6B7280"
+                  color={isDark ? "#9CA3AF" : "#6B7280"}
                 />
               </Pressable>
             </View>
@@ -240,16 +249,23 @@ export default function SignIn() {
           </View>
 
           {error && (
-            <View className="bg-red-50 p-3 rounded-xl">
-              <AppText className="text-red-600 text-sm text-center">
+            <View className="bg-destructive/10 p-3 rounded-xl">
+              <AppText className="text-destructive text-sm text-center">
                 {error}
               </AppText>
               {showResend && (
-                <Pressable onPress={handleResendConfirmation} className="mt-2">
-                  <AppText className="text-blue-600 text-sm font-bold text-center underline">
-                    Resend Confirmation Email
-                  </AppText>
-                </Pressable>
+                <View className="flex-row justify-center gap-6 mt-3">
+                    <Pressable onPress={handleResendConfirmation}>
+                      <AppText className="text-primary text-sm font-bold text-center underline">
+                        Resend Email
+                      </AppText>
+                    </Pressable>
+                    <Pressable onPress={() => router.push({ pathname: "/auth/verify-email", params: { email: emailOrPhone } })}>
+                      <AppText className="text-primary text-sm font-bold text-center underline">
+                        Enter Code
+                      </AppText>
+                    </Pressable>
+                </View>
               )}
             </View>
           )}
@@ -259,13 +275,13 @@ export default function SignIn() {
             onPress={handleLogin}
             disabled={loading}
             className={`h-14 rounded-xl items-center justify-center mt-2 ${
-              loading ? "bg-blue-400" : "bg-blue-600"
+              loading ? "bg-primary/70" : "bg-primary"
             }`}
           >
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <AppText className="text-white font-semibold text-base">
+              <AppText className="text-primary-foreground font-semibold text-base">
                 Sign In
               </AppText>
             )}
@@ -273,11 +289,11 @@ export default function SignIn() {
 
           {/* Divider */}
           <View className="flex-row items-center my-2">
-            <View className="flex-1 h-[1px] bg-gray-200" />
-            <AppText className="mx-4 text-gray-500 text-sm">
+            <View className="flex-1 h-[1px] bg-border" />
+            <AppText className="mx-4 text-muted-foreground text-sm">
               or
             </AppText>
-            <View className="flex-1 h-[1px] bg-gray-200" />
+            <View className="flex-1 h-[1px] bg-border" />
           </View>
 
           {/* Social Buttons */}
@@ -285,10 +301,10 @@ export default function SignIn() {
             <Pressable
               onPress={() => promptAsync()}
               disabled={!request || loading}
-              className="h-14 rounded-xl border border-gray-200 bg-white flex-row items-center justify-center gap-3"
+              className="h-14 rounded-xl border border-input bg-card flex-row items-center justify-center gap-3"
             >
-               <Ionicons name="logo-google" size={20} color="#1F2937" />
-              <AppText className="text-gray-900 font-semibold text-base">
+               <Ionicons name="logo-google" size={20} color={isDark ? "#FFFFFF" : "#1F2937"} />
+              <AppText className="text-foreground font-semibold text-base">
                 Sign In with Google
               </AppText>
             </Pressable>
@@ -296,11 +312,11 @@ export default function SignIn() {
 
            {/* Footer */}
            <View className="mt-4 mb-6">
-            <AppText className="text-center text-gray-500 text-xs leading-5">
+            <AppText className="text-center text-muted-foreground text-xs leading-5">
               By continuing, you agree to our{" "}
-              <AppText className="text-blue-600 font-medium">Terms of Service</AppText>
+              <AppText className="text-primary font-medium">Terms of Service</AppText>
               {" and "}
-              <AppText className="text-blue-600 font-medium">Privacy Policy</AppText>.
+              <AppText className="text-primary font-medium">Privacy Policy</AppText>.
             </AppText>
           </View>
         </View>

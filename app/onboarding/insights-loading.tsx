@@ -2,6 +2,7 @@ import LoadingDots from "@/components/onboarding/LoadingDots";
 import { AppText } from "@/components/shared/AppText";
 import { onboardingStore } from "@/store/onboardingStore";
 import { router } from "expo-router";
+import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
@@ -9,6 +10,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSnapshot } from "valtio";
 
 export default function InsightsLoading() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const snap = useSnapshot(onboardingStore);
   const pulse = useSharedValue(1);
   const dot1 = useSharedValue(0);
@@ -64,7 +67,7 @@ export default function InsightsLoading() {
   const animatedTextStyle = useAnimatedStyle(() => ({ opacity: textOpacity.value }));
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]">
+    <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 items-center justify-center px-5">
         <Animated.View className="w-40 h-40 rounded-2xl items-center justify-center" style={pulseStyle}>
           <Image
@@ -74,7 +77,7 @@ export default function InsightsLoading() {
           />
         </Animated.View>
         <Animated.View className="mt-6 items-center" style={animatedTextStyle}>
-          <AppText className="text-3xl text-blue-600 font-bold text-center">
+          <AppText className="text-3xl text-primary font-bold text-center">
             {messages[msgIndex]}
           </AppText>
         </Animated.View>

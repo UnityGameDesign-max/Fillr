@@ -5,6 +5,7 @@ import Animated, {
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { useColorScheme } from "nativewind";
 
 export default function Dot({
   index,
@@ -15,6 +16,13 @@ export default function Dot({
   x: SharedValue<number>;
   screenWidth: number;
 }) {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
+  
+  // Theme colors matching global.css
+  const activeColor = isDark ? "#0A84FF" : "#007AFF"; // Primary
+  const inactiveColor = isDark ? "#292929" : "#D9D9D9"; // Muted
+
   const animatedStyle = useAnimatedStyle(() => {
     const input = [
       (index - 1) * screenWidth,
@@ -27,7 +35,7 @@ export default function Dot({
       backgroundColor: interpolateColor(
         x.value,
         input,
-        ["#D0D0D0", "#304FFE", "#D0D0D0"]
+        [inactiveColor, activeColor, inactiveColor]
       ),
     };
   });

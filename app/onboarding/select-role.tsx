@@ -4,11 +4,14 @@ import { ROLES } from "@/data/onboarding";
 import { onboardingStore } from "@/store/onboardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useColorScheme } from "nativewind";
 import React, { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SelectRole() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleContinue = async () => {
@@ -26,23 +29,23 @@ export default function SelectRole() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]">
+    <SafeAreaView className="flex-1 bg-background">
       <View className="px-5 pt-10">
         <Pressable
           onPress={handleBack}
           className="mb-4 w-10 h-10 rounded-full items-center justify-center"
         >
-          <Ionicons name="arrow-back" size={24} color="#000" />
+          <Ionicons name="arrow-back" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
         </Pressable>
         <View className="mb-6">
           <ProgressSegments current={2} total={3} className="mb-3" />
-          <AppText className="text-sm font-medium text-gray-500 mb-1">
+          <AppText className="text-sm font-medium text-muted-foreground mb-1">
             Question 2/3
           </AppText>
-          <AppText className="text-3xl font-bold text-gray-900 mb-1">
+          <AppText className="text-3xl font-bold text-foreground mb-1">
             What type of role are you?
           </AppText>
-          <AppText className="text-gray-600">
+          <AppText className="text-muted-foreground">
             Select one to tailor the app experience to your needs.
           </AppText>
         </View>
@@ -62,8 +65,8 @@ export default function SelectRole() {
               className={`w-full p-4 rounded-2xl mb-3 border-2
               ${
                 isSelected
-                  ? "border-[#00AF54] bg-green-50"
-                  : "border-gray-300 bg-white"
+                  ? "border-green-500 bg-green-500/10"
+                  : "border-border bg-card"
               }`}
             >
               <View className="flex-row items-start gap-3">
@@ -73,10 +76,10 @@ export default function SelectRole() {
                   <Ionicons name={opt.iconName} size={22} color={opt.iconColor} />
                 </View>
                 <View className="flex-1">
-                  <AppText className="text-lg font-semibold text-gray-900">
+                  <AppText className="text-lg font-semibold text-foreground">
                     {opt.title}
                   </AppText>
-                  <AppText className="text-gray-600 mt-1 text-sm">
+                  <AppText className="text-muted-foreground mt-1 text-sm">
                     {opt.desc}
                   </AppText>
                 </View>
@@ -94,9 +97,9 @@ export default function SelectRole() {
           disabled={!selected}
           onPress={handleContinue}
           className={`h-14 rounded-xl items-center justify-center 
-            ${selected ? "bg-blue-600" : "bg-gray-300"}`}
+            ${selected ? "bg-primary" : "bg-muted"}`}
         >
-          <AppText className="text-white font-semibold text-base">
+          <AppText className="text-primary-foreground font-semibold text-base">
             Continue
           </AppText>
         </Pressable>

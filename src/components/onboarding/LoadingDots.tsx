@@ -1,13 +1,19 @@
 import React, { useEffect } from "react";
 import { View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import { useColorScheme } from "nativewind";
 
 type Props = {
   color?: string;
   className?: string;
 };
 
-export default function LoadingDots({ color = "#1D4ED8", className }: Props) {
+export default function LoadingDots({ color, className }: Props) {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const defaultColor = isDark ? "#0A84FF" : "#007AFF";
+  const finalColor = color || defaultColor;
+
   const dot1 = useSharedValue(0);
   const dot2 = useSharedValue(0);
   const dot3 = useSharedValue(0);
@@ -28,9 +34,9 @@ export default function LoadingDots({ color = "#1D4ED8", className }: Props) {
 
   return (
     <View className={`flex-row gap-2 ${className || ""}`}>
-      <Animated.View className="w-2 h-2 rounded-full" style={[s1, { backgroundColor: color }]} />
-      <Animated.View className="w-2 h-2 rounded-full" style={[s2, { backgroundColor: color }]} />
-      <Animated.View className="w-2 h-2 rounded-full" style={[s3, { backgroundColor: color }]} />
+      <Animated.View className="w-2 h-2 rounded-full" style={[s1, { backgroundColor: finalColor }]} />
+      <Animated.View className="w-2 h-2 rounded-full" style={[s2, { backgroundColor: finalColor }]} />
+      <Animated.View className="w-2 h-2 rounded-full" style={[s3, { backgroundColor: finalColor }]} />
     </View>
   );
 }

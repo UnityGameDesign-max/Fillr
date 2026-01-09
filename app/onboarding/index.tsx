@@ -55,7 +55,7 @@ export default function Onboarding() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-background">
       <Animated.FlatList
         ref={ref}
         data={pages}
@@ -81,7 +81,7 @@ export default function Onboarding() {
         {/* Sign In Link - Only on first slide */}
         {snap.slideIndex === 0 && (
           <Pressable onPress={() => router.replace("/auth/sign-in")} className="mt-4">            
-             <AppText className="text-blue-600 font-semibold">Already have an account?</AppText>
+             <AppText className="text-primary font-semibold">Already have an account?</AppText>
           </Pressable>
         )}
       </View>

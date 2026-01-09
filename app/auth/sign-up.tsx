@@ -5,19 +5,22 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Image,
-    Pressable,
-    ScrollView,
-    TextInput,
-    View
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  TextInput,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSnapshot } from "valtio";
 
 export default function SignUp() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -136,7 +139,7 @@ export default function SignUp() {
   const strengthScore = getStrength(password);
   const strengthLabels = ["Weak", "Weak", "Fair", "Good", "Strong"];
   const strengthColor = [
-    "#E5E7EB", // 0 (Gray)
+    isDark ? "#374151" : "#E5E7EB", // 0 (Gray)
     "#EF4444", // 1 (Red)
     "#F59E0B", // 2 (Orange)
     "#3B82F6", // 3 (Blue)
@@ -225,7 +228,7 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]">
+    <SafeAreaView className="flex-1 bg-background">
       <ScrollView
         contentContainerStyle={{ paddingBottom: 24, paddingHorizontal: 24 }}
         showsVerticalScrollIndicator={false}
@@ -235,30 +238,30 @@ export default function SignUp() {
           <View className="w-16 h-16 rounded-2xl items-center justify-center mb-6">
             <Image
               source={require("../../assets/images/android-icon-monochrome.png")}
-              style={{ width: 100, height: 100 }}
+              style={{ width: 100, height: 100, tintColor: isDark ? "#FFFFFF" : undefined }}
               resizeMode="contain"
             />
           </View>
-          <AppText className="text-2xl font-bold text-center text-gray-900 mb-2">
+          <AppText className="text-2xl font-bold text-center text-foreground mb-2">
             Welcome Back!
           </AppText>
-          <AppText className="text-center text-gray-500 leading-6 px-4">
+          <AppText className="text-center text-muted-foreground leading-6 px-4">
             Sign in to manage your fleet or create a new account.
           </AppText>
         </View>
 
         {/* Tab Switcher */}
-        <View className="flex-row bg-gray-200 p-1 rounded-xl mb-6">
+        <View className="flex-row bg-muted p-1 rounded-xl mb-6">
           <Pressable
             onPress={() => router.replace("/auth/sign-in")}
             className="flex-1 py-3 items-center justify-center rounded-lg"
           >
-            <AppText className="text-gray-500 font-medium">Sign In</AppText>
+            <AppText className="text-muted-foreground font-medium">Sign In</AppText>
           </Pressable>
           <Pressable
-            className="flex-1 py-3 items-center justify-center bg-white shadow-sm rounded-lg"
+            className="flex-1 py-3 items-center justify-center bg-card shadow-sm rounded-lg"
           >
-            <AppText className="text-gray-900 font-semibold">Create Account</AppText>
+            <AppText className="text-foreground font-semibold">Create Account</AppText>
           </Pressable>
         </View>
 
@@ -266,15 +269,15 @@ export default function SignUp() {
         <View className="gap-5">
           {/* Email */}
           <View>
-            <AppText className="text-sm font-semibold text-gray-900 mb-2">
+            <AppText className="text-sm font-semibold text-foreground mb-2">
               Email Address
             </AppText>
             <TextInput
               value={email}
               onChangeText={setEmail}
               placeholder="name@example.com"
-              className="w-full h-14 px-4 rounded-xl border border-gray-200 bg-white text-base text-gray-900"
-              placeholderTextColor="#9CA3AF"
+              className="w-full h-14 px-4 rounded-xl border border-input bg-card text-base text-foreground"
+              placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
               autoCapitalize="none"
               keyboardType="email-address"
             />
@@ -282,7 +285,7 @@ export default function SignUp() {
 
           {/* Password */}
           <View>
-            <AppText className="text-sm font-semibold text-gray-900 mb-2">
+            <AppText className="text-sm font-semibold text-foreground mb-2">
               Password
             </AppText>
             <View className="relative">
@@ -291,8 +294,8 @@ export default function SignUp() {
                 onChangeText={setPassword}
                 placeholder="Create a password"
                 secureTextEntry={!showPass}
-                className="w-full h-14 px-4 pr-12 rounded-xl border border-gray-200 bg-white text-base text-gray-900"
-                placeholderTextColor="#9CA3AF"
+                className="w-full h-14 px-4 pr-12 rounded-xl border border-input bg-card text-base text-foreground"
+                placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
                 autoCapitalize="none"
               />
               <Pressable
@@ -302,7 +305,7 @@ export default function SignUp() {
                 <Ionicons
                   name={showPass ? "eye-off" : "eye"}
                   size={20}
-                  color="#6B7280"
+                  color={isDark ? "#9CA3AF" : "#6B7280"}
                 />
               </Pressable>
             </View>
@@ -319,14 +322,14 @@ export default function SignUp() {
                         backgroundColor:
                           strengthScore >= level
                             ? strengthColor[strengthScore]
-                            : "#E5E7EB",
+                            : (isDark ? "#374151" : "#E5E7EB"),
                       }}
                     />
                   ))}
                 </View>
                 <AppText
                   className="text-xs font-medium"
-                  style={{ color: strengthColor[strengthScore] || "#9CA3AF" }}
+                  style={{ color: strengthColor[strengthScore] || (isDark ? "#9CA3AF" : "#9CA3AF") }}
                 >
                   {strengthLabels[strengthScore]}
                 </AppText>
@@ -335,8 +338,8 @@ export default function SignUp() {
           </View>
 
           {error && (
-            <View className="bg-red-50 p-3 rounded-xl">
-              <AppText className="text-red-600 text-sm text-center">
+            <View className="bg-destructive/10 p-3 rounded-xl">
+              <AppText className="text-destructive text-sm text-center">
                 {error}
               </AppText>
             </View>
@@ -347,13 +350,13 @@ export default function SignUp() {
             onPress={handleRegister}
             disabled={loading}
             className={`h-14 rounded-xl items-center justify-center mt-2 ${
-              loading ? "bg-blue-400" : "bg-blue-600"
+              loading ? "bg-primary/70" : "bg-primary"
             }`}
           >
             {loading ? (
-              <ActivityIndicator color="white" />
+              <ActivityIndicator color={isDark ? "#000" : "white"} />
             ) : (
-              <AppText className="text-white font-semibold text-base">
+              <AppText className="text-primary-foreground font-semibold text-base">
                 Create Account
               </AppText>
             )}
@@ -361,11 +364,11 @@ export default function SignUp() {
 
           {/* Divider */}
           <View className="flex-row items-center my-2">
-            <View className="flex-1 h-[1px] bg-gray-200" />
-            <AppText className="mx-4 text-gray-500 text-sm">
+            <View className="flex-1 h-[1px] bg-border" />
+            <AppText className="mx-4 text-muted-foreground text-sm">
               or sign up with
             </AppText>
-            <View className="flex-1 h-[1px] bg-gray-200" />
+            <View className="flex-1 h-[1px] bg-border" />
           </View>
 
           {/* Social Buttons */}
@@ -373,10 +376,10 @@ export default function SignUp() {
             <Pressable
               onPress={() => promptAsync()}
               disabled={!request || loading}
-              className="h-14 rounded-xl border border-gray-200 bg-white flex-row items-center justify-center gap-3"
+              className="h-14 rounded-xl border border-input bg-card flex-row items-center justify-center gap-3"
             >
-               <Ionicons name="logo-google" size={20} color="#1F2937" />
-              <AppText className="text-gray-900 font-semibold text-base">
+               <Ionicons name="logo-google" size={20} color={isDark ? "#FFFFFF" : "#1F2937"} />
+              <AppText className="text-foreground font-semibold text-base">
                 Sign Up with Google
               </AppText>
             </Pressable>
@@ -384,11 +387,11 @@ export default function SignUp() {
           </View>
 
           <View className="mt-4 mb-6">
-            <AppText className="text-center text-gray-500 text-xs leading-5">
+            <AppText className="text-center text-muted-foreground text-xs leading-5">
               By creating an account, you agree to our{" "}
-              <AppText className="text-blue-600 font-medium">Terms of Service</AppText>
+              <AppText className="text-primary font-medium">Terms of Service</AppText>
               {" and "}
-              <AppText className="text-blue-600 font-medium">Privacy Policy</AppText>.
+              <AppText className="text-primary font-medium">Privacy Policy</AppText>.
             </AppText>
           </View>
         </View>

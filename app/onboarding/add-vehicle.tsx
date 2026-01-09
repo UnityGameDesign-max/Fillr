@@ -4,6 +4,7 @@ import { FUEL_TYPES } from "@/data/onboarding";
 import { onboardingStore } from "@/store/onboardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useColorScheme } from "nativewind";
 import React, { useState } from "react";
 import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const YEARS = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
 
 export default function AddVehicle() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [year, setYear] = useState<string | null>(null);
@@ -53,23 +56,23 @@ export default function AddVehicle() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]">
+    <SafeAreaView className="flex-1 bg-background">
       <View className="px-5 pt-10">
         <Pressable
           onPress={handleBack}
           className="mb-4 w-10 h-10 rounded-full items-center justify-center"
         >
-          <Ionicons name="arrow-back" size={24} color="#000" />
+          <Ionicons name="arrow-back" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
         </Pressable>
         <View className="mb-6">
           <ProgressSegments current={3} total={3} className="mb-3" />
-          <AppText className="text-sm font-medium text-gray-500 mb-1">
+          <AppText className="text-sm font-medium text-muted-foreground mb-1">
             Question 3/3
           </AppText>
-          <AppText className="text-3xl font-bold text-gray-900 mb-1">
+          <AppText className="text-3xl font-bold text-foreground mb-1">
             Add Your Vehicle
           </AppText>
-          <AppText className="text-gray-600">
+          <AppText className="text-muted-foreground">
             Help us track your fuel efficiency accurately.
           </AppText>
         </View>
@@ -82,35 +85,35 @@ export default function AddVehicle() {
       >
         {/* Make */}
         <View className="mb-4">
-          <AppText className="text-sm font-semibold text-gray-700 mb-2">
+          <AppText className="text-sm font-semibold text-foreground mb-2">
             Make *
           </AppText>
           <TextInput
             value={make}
             onChangeText={setMake}
             placeholder="e.g., Toyota, Ford, BMW"
-            className="w-full p-4 rounded-xl border border-gray-300 bg-white text-base"
-            placeholderTextColor="#9CA3AF"
+            className="w-full p-4 rounded-xl border border-input bg-card text-base text-foreground"
+            placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
           />
         </View>
 
         {/* Model */}
         <View className="mb-4">
-          <AppText className="text-sm font-semibold text-gray-700 mb-2">
+          <AppText className="text-sm font-semibold text-foreground mb-2">
             Model *
           </AppText>
           <TextInput
             value={model}
             onChangeText={setModel}
             placeholder="e.g., Corolla, Focus, 3 Series"
-            className="w-full p-4 rounded-xl border border-gray-300 bg-white text-base"
-            placeholderTextColor="#9CA3AF"
+            className="w-full p-4 rounded-xl border border-input bg-card text-base text-foreground"
+            placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
           />
         </View>
 
         {/* Year */}
         <View className="mb-4">
-          <AppText className="text-sm font-semibold text-gray-700 mb-2">
+          <AppText className="text-sm font-semibold text-foreground mb-2">
             Year *
           </AppText>
           <ScrollView
@@ -127,13 +130,13 @@ export default function AddVehicle() {
                     onPress={() => setYear(String(yr))}
                     className={`px-4 py-2 rounded-lg border-2 ${
                       isSelected
-                        ? "border-blue-600 bg-blue-50"
-                        : "border-gray-300 bg-white"
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-card"
                     }`}
                   >
                     <AppText
                       className={`text-base ${
-                        isSelected ? "text-blue-600 font-semibold" : "text-gray-700"
+                        isSelected ? "text-primary font-semibold" : "text-foreground"
                       }`}
                     >
                       {yr}
@@ -147,21 +150,21 @@ export default function AddVehicle() {
 
         {/* Engine */}
         <View className="mb-4">
-          <AppText className="text-sm font-semibold text-gray-700 mb-2">
+          <AppText className="text-sm font-semibold text-foreground mb-2">
             Engine *
           </AppText>
           <TextInput
             value={engine}
             onChangeText={setEngine}
             placeholder="e.g., 1.6L, 2.0L Turbo"
-            className="w-full p-4 rounded-xl border border-gray-300 bg-white text-base"
-            placeholderTextColor="#9CA3AF"
+            className="w-full p-4 rounded-xl border border-input bg-card text-base text-foreground"
+            placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
           />
         </View>
 
         {/* Fuel Type */}
         <View className="mb-4">
-          <AppText className="text-sm font-semibold text-gray-700 mb-2">
+          <AppText className="text-sm font-semibold text-foreground mb-2">
             Fuel Type *
           </AppText>
           <View className="flex-row flex-wrap gap-3">
@@ -173,14 +176,14 @@ export default function AddVehicle() {
                   onPress={() => setFuelType(type.id)}
                   className={`w-[48%] p-4 rounded-xl border-2 flex-row items-center justify-center gap-2 ${
                     isSelected
-                      ? "border-blue-600 bg-blue-50"
-                      : "border-gray-300 bg-white"
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-card"
                   }`}
                 >
                   <AppText className="text-2xl">{type.emoji}</AppText>
                   <AppText
                     className={`text-base font-semibold ${
-                      isSelected ? "text-blue-600" : "text-gray-700"
+                      isSelected ? "text-primary" : "text-foreground"
                     }`}
                   >
                     {type.name}
@@ -193,7 +196,7 @@ export default function AddVehicle() {
 
         {/* Current Odometer */}
         <View className="mb-4">
-          <AppText className="text-sm font-semibold text-gray-700 mb-2">
+          <AppText className="text-sm font-semibold text-foreground mb-2">
             Current Odometer (Km) *
           </AppText>
           <TextInput
@@ -201,8 +204,8 @@ export default function AddVehicle() {
             onChangeText={setOdometer}
             placeholder="e.g., 50000"
             keyboardType="numeric"
-            className="w-full p-4 rounded-xl border border-gray-300 bg-white text-base"
-            placeholderTextColor="#9CA3AF"
+            className="w-full p-4 rounded-xl border border-input bg-card text-base text-foreground"
+            placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
           />
         </View>
       </ScrollView>
@@ -212,9 +215,9 @@ export default function AddVehicle() {
           disabled={!isValid}
           onPress={handleContinue}
           className={`h-14 rounded-xl items-center justify-center 
-            ${isValid ? "bg-blue-600" : "bg-gray-300"}`}
+            ${isValid ? "bg-primary" : "bg-muted"}`}
         >
-          <AppText className="text-white font-semibold text-base">
+          <AppText className="text-primary-foreground font-semibold text-base">
             Continue
           </AppText>
         </Pressable>

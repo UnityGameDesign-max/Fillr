@@ -1,11 +1,15 @@
+import { supabase } from "@/lib/supabase";
+import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { useColorScheme } from "nativewind";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import * as SecureStore from "expo-secure-store";
-import { router } from "expo-router";
-import { supabase } from "@/lib/supabase";
 
 export default function Index() {
   const [loading, setLoading] = useState(true);
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const primaryColor = isDark ? "#0A84FF" : "#007AFF";
 
   useEffect(() => {
     const checkSession = async () => {
@@ -31,7 +35,7 @@ export default function Index() {
           // But for now, let's route to Register to match the flow requested.
           // Or better, route to a landing that allows both.
           // I'll route to Register as it's the screen I just built.
-          router.replace("/onboarding/register"); 
+          router.replace("/auth/sign-up"); 
         } else {
           // New user -> Onboarding
           router.replace("/onboarding");

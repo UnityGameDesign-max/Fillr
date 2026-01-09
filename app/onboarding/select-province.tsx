@@ -4,6 +4,7 @@ import { PROVINCES } from "@/data/onboarding";
 import { onboardingStore } from "@/store/onboardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useColorScheme } from "nativewind";
 import React, { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,6 +12,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function SelectProvince() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleContinue = async () => {
@@ -32,30 +35,30 @@ export default function SelectProvince() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8F9FB]">
+    <SafeAreaView className="flex-1 bg-background">
       <View className="px-5 pt-10">
         <Pressable
           onPress={handleBack}
           className="mb-4 w-10 h-10 rounded-full items-center justify-center"
         >
-          <Ionicons name="arrow-back" size={24} color="#000" />
+          <Ionicons name="arrow-back" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
         </Pressable>
         <View className="mb-4">
           <ProgressSegments current={1} total={3} className="mb-3" />
-          <AppText className="text-sm font-medium text-gray-500 mb-1">
+          <AppText className="text-sm font-medium text-muted-foreground mb-1">
             Question 1/3
           </AppText>
-          <AppText className="text-3xl font-bold text-gray-900 mb-1">
+          <AppText className="text-3xl font-bold text-foreground mb-1">
             Where are you located?
           </AppText>
-          <AppText className="text-gray-600 mb-3">
+          <AppText className="text-muted-foreground mb-3">
             Select your province to help us personalize your experience.
           </AppText>
-          <View className="bg-blue-50 border border-blue-200 rounded-xl p-3">
-            <AppText className="text-sm text-blue-900 font-medium mb-1">
+          <View className="bg-primary/10 border border-primary/20 rounded-xl p-3">
+            <AppText className="text-sm text-primary font-medium mb-1">
               Why do we need this?
             </AppText>
-            <AppText className="text-xs text-blue-800">
+            <AppText className="text-xs text-primary">
               Fuel prices in South Africa differ between inland (Reef) and coastal areas. Your province determines which pricing applies to you.
             </AppText>
           </View>
@@ -76,18 +79,18 @@ export default function SelectProvince() {
               className={`w-full p-4 rounded-2xl mb-3 border-2
               ${
                 isSelected
-                  ? "border-[#00AF54] bg-green-50"
-                  : "border-gray-300 bg-white"
+                  ? "border-green-500 bg-green-500/10"
+                  : "border-border bg-card"
               }`}
             >
               <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-3 flex-1">
                   <AppText className="text-2xl">{province.emoji}</AppText>
                   <View className="flex-1">
-                    <AppText className="text-lg font-semibold text-gray-900">
+                    <AppText className="text-lg font-semibold text-foreground">
                       {province.name}
                     </AppText>
-                    <AppText className="text-xs text-gray-500 mt-0.5">
+                    <AppText className="text-xs text-muted-foreground mt-0.5">
                       {province.pricing}
                     </AppText>
                   </View>
@@ -106,9 +109,9 @@ export default function SelectProvince() {
           disabled={!selected}
           onPress={handleContinue}
           className={`h-14 rounded-xl items-center justify-center 
-            ${selected ? "bg-blue-600" : "bg-gray-300"}`}
+            ${selected ? "bg-primary" : "bg-muted"}`}
         >
-          <AppText className="text-white font-semibold text-base">
+          <AppText className="text-primary-foreground font-semibold text-base">
             Continue
           </AppText>
         </Pressable>

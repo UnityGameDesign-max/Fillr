@@ -17,11 +17,12 @@ export default function TabSettings() {
         if (error) {
             console.error("Sign out error:", error);
             alert(`Error signing out: ${error.message}`);
+            return;
         }
-        router.replace("/onboarding/login");
+        router.replace("/auth/sign-in");
     } catch (e) {
         console.error("Unexpected error signing out:", e);
-        router.replace("/onboarding/login");
+        router.replace("/auth/sign-in");
     }
   };
 
@@ -37,7 +38,7 @@ export default function TabSettings() {
             <View className="bg-card border-y border-border">
                 <View className="flex-row items-center py-4 px-5">
                     <View className="w-8 items-center mr-3">
-                        <Ionicons name="moon-outline" size={24} color={isDark ? "#fff" : "#000"} />
+                        <Ionicons name="moon-outline" size={24} color={isDark ? "#FFFFFF" : "#1F2937"} />
                     </View>
                     <Text className="flex-1 text-base text-foreground">Dark Mode</Text>
                     <Switch 
@@ -53,10 +54,10 @@ export default function TabSettings() {
             <View className="bg-card border-y border-border">
                 <Pressable className="flex-row items-center py-4 px-5 active:opacity-70" onPress={handleSignOut}>
                     <View className="w-8 items-center mr-3">
-                        <Ionicons name="log-out-outline" size={24} color="#EF4444" />
+                        <Ionicons name="log-out-outline" size={24} color={isDark ? "#FF453A" : "#FF3B30"} />
                     </View>
-                    <Text className="flex-1 text-base text-red-500">Sign Out</Text>
-                    <Ionicons name="chevron-forward" size={20} color={isDark ? "#6B7280" : "#C7C7CC"} />
+                    <Text className="flex-1 text-base text-destructive">Sign Out</Text>
+                    <Ionicons name="chevron-forward" size={20} color={isDark ? "#9CA3AF" : "#9CA3AF"} />
                 </Pressable>
             </View>
         </View>

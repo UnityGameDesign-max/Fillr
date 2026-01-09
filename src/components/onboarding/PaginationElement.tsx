@@ -36,7 +36,7 @@ export default function PaginationElement({
         <View
           key={i}
           className={`h-2 w-2 rounded-full mx-1 ${
-            snap.currentStep === i ? "bg-blue-600" : "bg-gray-300"
+            snap.currentStep === i ? "bg-primary" : "bg-muted"
           }`}
         />
       ))}

@@ -1,12 +1,12 @@
+import { onboardingStore } from "@/store/onboardingStore";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { Dimensions, Pressable } from "react-native";
 import Animated, {
-  SharedValue,
-  useAnimatedStyle,
-  withTiming,
+    SharedValue,
+    useAnimatedStyle,
+    withTiming,
 } from "react-native-reanimated";
-import { onboardingStore } from "@/store/onboardingStore";
 
 export default function Button({
   currentIndex,
@@ -64,7 +64,7 @@ export default function Button({
 
   return (
     <Animated.View
-      className="mt-8 rounded-xl bg-[#1d4ed8] overflow-hidden"
+      className="mt-8 rounded-xl bg-primary overflow-hidden"
       style={buttonStyle}
     >
       <Pressable
@@ -72,14 +72,14 @@ export default function Button({
         onPress={onPress}
       >
         <Animated.Text
-          className="text-white font-semibold text-base absolute"
+          className="text-primary-foreground font-semibold text-base absolute"
           style={continueStyle}
         >
           Continue
         </Animated.Text>
 
         <Animated.Text
-          className="text-white font-semibold text-base absolute"
+          className="text-primary-foreground font-semibold text-base absolute"
           style={getStartedStyle}
         >
           Get Started

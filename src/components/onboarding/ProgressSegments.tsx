@@ -13,7 +13,7 @@ export default function ProgressSegments({ current, total, className }: Props) {
       {Array.from({ length: total }).map((_, i) => (
         <View
           key={i}
-          className={`h-2 flex-1 rounded-full ${i < current ? "bg-blue-600" : "bg-gray-300"}`}
+          className={`h-2 flex-1 rounded-full ${i < current ? "bg-primary" : "bg-muted"}`}
         />
       ))}
     </View>
