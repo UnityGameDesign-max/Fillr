@@ -2,66 +2,144 @@ import { supabase } from "@/lib/supabase";
 import { Ionicons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import { useColorScheme } from "nativewind";
-import React from 'react';
-import { Pressable, Switch, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Pressable, ScrollView, Switch, Text, View, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+interface SettingsItemProps {
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+  onPress?: () => void;
+  showChevron?: boolean;
+  rightElement?: React.ReactNode;
+  isLast?: boolean;
+}
+
+const SettingsItem = ({ icon, iconBg, label, onPress, showChevron = true, rightElement, isLast }: SettingsItemProps) => (
+  <Pressable 
+    onPress={onPress} 
+    className={`flex-row items-center p-4 ${!isLast ? 'border-b border-gray-100 dark:border-gray-800' : ''} active:opacity-70`}
+  >
+    <View className="w-10 h-10 rounded-xl items-center justify-center mr-4" style={{ backgroundColor: iconBg }}>
+      {icon}
+    </View>
+    <Text className="flex-1 text-base font-semiBold text-foreground">{label}</Text>
+    {rightElement ? rightElement : (showChevron && (
+      <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+    ))}
+  </Pressable>
+);
 
 export default function TabSettings() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const [userEmail, setUserEmail] = useState<string>("");
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user?.email) setUserEmail(user.email);
+    });
+  }, []);
   
   const handleSignOut = async () => {
-    console.log("Sign out pressed - executing direct signout");
     try {
         const { error } = await supabase.auth.signOut();
-        if (error) {
-            console.error("Sign out error:", error);
-            alert(`Error signing out: ${error.message}`);
-            return;
-        }
+        if (error) throw error;
         router.replace("/auth/sign-in");
     } catch (e) {
-        console.error("Unexpected error signing out:", e);
+        console.error("Error signing out:", e);
         router.replace("/auth/sign-in");
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <View className="px-5 py-4 bg-card border-b border-border">
-        <Text className="text-2xl font-bold text-foreground">Settings</Text>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-background" edges={['top']}>
+      {/* Header */}
+      <View className="px-4 py-6 flex-row items-center justify-between">
+        <Text className="text-3xl font-bold text-foreground">Settings</Text>
       </View>
       
-      <View className="flex-1 pt-6">
-        <View className="mb-6">
-            <Text className="text-sm font-semibold text-muted-foreground uppercase mb-2 mt-4 ml-5">Appearance</Text>
-            <View className="bg-card border-y border-border">
-                <View className="flex-row items-center py-4 px-5">
-                    <View className="w-8 items-center mr-3">
-                        <Ionicons name="moon-outline" size={24} color={isDark ? "#FFFFFF" : "#1F2937"} />
-                    </View>
-                    <Text className="flex-1 text-base text-foreground">Dark Mode</Text>
+      <ScrollView className="flex-1 px-6 pt-2" showsVerticalScrollIndicator={false}>
+
+        {/* General */}
+        <Text className="text-xs font-bold text-muted-foreground uppercase mb-3 tracking-wider">General</Text>
+        <View className="bg-white dark:bg-card rounded-3xl overflow-hidden shadow-sm mb-8">
+            <SettingsItem 
+                icon={<Ionicons name="person-outline" size={22} color="#0D9488" />}
+                iconBg={isDark ? "rgba(20, 184, 166, 0.1)" : "#F0FDFA"}
+                label="Profile"
+                onPress={() => {}}
+            />
+            <SettingsItem 
+                icon={<Ionicons name="moon-outline" size={22} color="#8B5CF6" />}
+                iconBg={isDark ? "rgba(139, 92, 246, 0.1)" : "#F5F3FF"}
+                label="Dark Mode"
+                rightElement={
                     <Switch 
                         value={isDark} 
                         onValueChange={toggleColorScheme}
+                        trackColor={{ false: '#E5E7EB', true: '#10B981' }}
+                        thumbColor={'#FFFFFF'}
                     />
-                </View>
-            </View>
+                }
+            />
+            <SettingsItem 
+                icon={<Ionicons name="compass-outline" size={22} color="#0D9488" />}
+                iconBg={isDark ? "rgba(20, 184, 166, 0.1)" : "#F0FDFA"}
+                label="Province Selection"
+                onPress={() => {}}
+            />
+            <SettingsItem 
+                icon={<Ionicons name="car-outline" size={22} color="#0D9488" />}
+                iconBg={isDark ? "rgba(20, 184, 166, 0.1)" : "#F0FDFA"}
+                label="Vehicle Management"
+                onPress={() => router.push("/onboarding/add-vehicle")}
+            />
+            <SettingsItem 
+                icon={<Ionicons name="notifications-outline" size={22} color="#0D9488" />}
+                iconBg={isDark ? "rgba(20, 184, 166, 0.1)" : "#F0FDFA"}
+                label="Notifications"
+                onPress={() => {}}
+            />
+            <SettingsItem 
+                icon={<Ionicons name="link-outline" size={22} color="#0D9488" />}
+                iconBg={isDark ? "rgba(20, 184, 166, 0.1)" : "#F0FDFA"}
+                label="Uber Integration"
+                onPress={() => {}}
+                isLast
+            />
+        </View>
+        
+        {/* Financial Management */}
+        <Text className="text-xs font-bold text-muted-foreground uppercase mb-3 mt-2 tracking-wider">Financial Management</Text>
+        <View className="bg-white dark:bg-card rounded-3xl overflow-hidden shadow-sm mb-6">
+            <SettingsItem 
+                icon={<Ionicons name="cash-outline" size={22} color="#10B981" />}
+                iconBg={isDark ? "rgba(16, 185, 129, 0.1)" : "#ECFDF5"}
+                label="Update Total Earnings"
+                onPress={() => {}}
+            />
+            <SettingsItem 
+                icon={<Ionicons name="trending-up-outline" size={22} color="#3B82F6" />}
+                iconBg={isDark ? "rgba(59, 130, 246, 0.1)" : "#EFF6FF"}
+                label="Update Profit Targets"
+                onPress={() => router.push("/onboarding/target-profit")}
+                isLast
+            />
         </View>
 
-        <View className="mb-6">
-            <Text className="text-sm font-semibold text-muted-foreground uppercase mb-2 mt-4 ml-5">Account</Text>
-            <View className="bg-card border-y border-border">
-                <Pressable className="flex-row items-center py-4 px-5 active:opacity-70" onPress={handleSignOut}>
-                    <View className="w-8 items-center mr-3">
-                        <Ionicons name="log-out-outline" size={24} color={isDark ? "#FF453A" : "#FF3B30"} />
-                    </View>
-                    <Text className="flex-1 text-base text-destructive">Sign Out</Text>
-                    <Ionicons name="chevron-forward" size={20} color={isDark ? "#9CA3AF" : "#9CA3AF"} />
-                </Pressable>
-            </View>
-        </View>
-      </View>
+
+        {/* Sign Out */}
+        <Pressable 
+            onPress={handleSignOut}
+            className="bg-red-50 dark:bg-red-900/20 py-4 rounded-2xl flex-row items-center justify-center gap-2 mb-10 active:opacity-80"
+        >
+            <Ionicons name="log-out-outline" size={22} color="#EF4444" />
+            <Text className="text-red-500 font-bold text-lg">Sign Out</Text>
+        </Pressable>
+
+      </ScrollView>
     </SafeAreaView>
   );
 }

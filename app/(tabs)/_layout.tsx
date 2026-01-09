@@ -64,15 +64,6 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="ai"
-        options={{
-          title: "AI",
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? "sparkles" : "sparkles-outline"} size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",

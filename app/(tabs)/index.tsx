@@ -15,8 +15,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// --- Components ---
-
 const InfoBottomSheet = ({ visible, onClose }: { visible: boolean; onClose: () => void }) => {
   return (
     <Modal
@@ -81,29 +79,17 @@ const InfoBottomSheet = ({ visible, onClose }: { visible: boolean; onClose: () =
 const Header = ({ name }: { name: string }) => {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
-  
-  const date = new Date().toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
+
 
   return (
     <View className="flex-row justify-between items-start mb-6">
       <View>
-        <View className="flex-row items-center gap-2 mb-1">
-            <View className="w-8 h-8 text-foreground rounded-full items-center justify-center">
-                 {/* Placeholder Avatar */}
-                 <Image 
-                    source={{ uri: `https://ui-avatars.com/api/?name=${name}&background=random` }} 
-                    className="w-8 h-8 rounded-full"
-                 />
-            </View>
+        <View className="flex-row items-center gap-2 mb-2">
+             <Image 
+                source={require('../../assets/images/icon.png')} 
+                className="w-10 h-10 rounded-xl"
+             />
         </View>
-        <Text className="text-2xl font-bold text-foreground">
-          Good Morning, {name}
-        </Text>
-        <Text className="text-muted-foreground text-sm mt-1">{date}</Text>
       </View>
       <Pressable className="p-2 bg-background rounded-full shadow-sm">
         <Ionicons name="notifications-outline" size={24} color={isDark ? "#FFF" : "#1F2937"} />
@@ -116,6 +102,7 @@ const Header = ({ name }: { name: string }) => {
 
 const RideShareDashboard = ({ name }: { name: string }) => {
   const [infoVisible, setInfoVisible] = useState(false);
+  const [isAssistantActive, setIsAssistantActive] = useState(false);
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -129,36 +116,31 @@ const RideShareDashboard = ({ name }: { name: string }) => {
     <View>
       <Header name={name} />
 
-      {/* Stats Row 1 */}
-      <View className="flex-row gap-4 mb-4">
+      {/* Stats Row */}
+      <View className="flex-row gap-4 mb-6">
         <View className="flex-1 bg-background p-4 rounded-2xl shadow-sm">
-          <View className="flex-row justify-between items-start mb-1">
-              <Text className="text-muted-foreground text-xs font-medium">Total Earnings</Text>
-              <Text>💰</Text>
-          </View>
-          <Text className="text-xl font-bold text-foreground">R 1,250.00</Text>
+           <Text className="text-muted-foreground text-xs font-medium mb-1">Total Earnings</Text>
+           <Text className="text-2xl font-bold text-foreground">R 1,250.00</Text>
         </View>
+
         <View className="flex-1 bg-background p-4 rounded-2xl shadow-sm">
-          <View className="flex-row justify-between items-start mb-1">
-              <Text className="text-muted-foreground text-xs font-medium">Fuel Cost</Text>
-              <Text>⛽</Text>
-          </View>
-          <Text className="text-xl font-bold text-foreground">R 320.50</Text>
+           <Text className="text-muted-foreground text-xs font-medium mb-1">Fuel Cost</Text>
+           <Text className="text-2xl font-bold text-foreground">R 320.50</Text>
         </View>
       </View>
 
-
-
       {/* Net Profit Today */}
-      <View className="bg-secondary/10 p-5 rounded-2xl mb-4 border border-secondary/20">
-        <Text className="text-secondary font-medium mb-1">Net Profit Today</Text>
-        <Text className="text-4xl font-bold text-secondary">R 929.50</Text>
+      <View className="bg-secondary/10 border border-secondary p-6 rounded-3xl mb-6">
+          <Text className="text-secondary font-medium text-base mb-1">Net Profit Today</Text>
+          <Text className="text-secondary text-4xl font-bold">R 929.50</Text>
       </View>
 
       {/* Daily Profit Target */}
       <View className="bg-background p-5 rounded-2xl shadow-sm mb-6">
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-foreground font-bold text-base">Daily Profit Target</Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-foreground font-bold text-base">Daily Profit Target</Text>
+          </View>
           <Text className="text-muted-foreground font-medium text-sm">R929.50 / R1,200</Text>
         </View>
         
@@ -171,6 +153,45 @@ const RideShareDashboard = ({ name }: { name: string }) => {
 
       <InfoBottomSheet visible={infoVisible} onClose={() => setInfoVisible(false)} />
 
+      {/* Trip AI Assistant Card */}
+      <View className={`p-5 rounded-3xl mb-6 ${isAssistantActive ? 'bg-red-500' : 'bg-blue-600'} shadow-sm`}>
+        <View className="flex-row justify-between items-start mb-4">
+            <View className="flex-row items-center gap-3">
+                <View className="w-10 h-10 bg-white/20 rounded-xl items-center justify-center">
+                    <MaterialCommunityIcons name="robot" size={22} color="white" />
+                </View>
+                <Text className="text-white font-bold text-xl">Trip AI Assistant</Text>
+            </View>
+            {!isAssistantActive && (
+                 <View className="bg-white/20 px-3 py-1 rounded-full flex-row items-center gap-1.5 border border-white/10">
+                    <View className="w-2 h-2 bg-green-400 rounded-full shadow-sm" />
+                    <Text className="text-white text-xs font-bold tracking-wide">READY</Text>
+                 </View>
+            )}
+        </View>
+
+        <Text className="text-white/90 text-sm mb-6 leading-5 font-medium">
+            {isAssistantActive
+                ? "Analyzing trip requests in real-time..."
+                : "Analyzes requests in real-time for profit optimization."
+            }
+        </Text>
+
+        <Pressable
+            onPress={() => setIsAssistantActive(!isAssistantActive)}
+            className="bg-white py-3.5 rounded-xl flex-row items-center justify-center gap-2 shadow-sm"
+        >
+            <Ionicons
+                name={isAssistantActive ? "stop" : "play"}
+                size={20}
+                color={isAssistantActive ? "#EF4444" : "#2563EB"}
+            />
+            <Text className={`font-bold text-base ${isAssistantActive ? 'text-red-500' : 'text-blue-600'}`}>
+                {isAssistantActive ? "Stop Assistant" : "Start Assistant"}
+            </Text>
+        </Pressable>
+      </View>
+
       {/* Earnings vs Fuel Graph (Mock) */}
       <View className="bg-background p-5 rounded-2xl shadow-sm mb-6">
         <View className="flex-row justify-between items-center mb-4">
@@ -178,7 +199,7 @@ const RideShareDashboard = ({ name }: { name: string }) => {
         </View>
         <Text className="text-muted-foreground text-xs mb-4">Last 7 Days (21 - 28 May) <Text className="text-secondary">+12%</Text></Text>
         
-        <View className="flex-row justify-between items-end h-40 px-2">
+        <View className="flex-row justify-between items-end h-54 px-2">
             {[
               { day: '21', earning: 80, fuel: 30 },
               { day: '22', earning: 90, fuel: 35 },

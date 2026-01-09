@@ -44,7 +44,7 @@ export default function RootLayout() {
     const backgroundColor = isDark ? "#121212" : "#FFFFFF";
     const buttonStyle = isDark ? "light" : "dark";
 
-    NavigationBar.setBackgroundColorAsync(backgroundColor);
+    // NavigationBar.setBackgroundColorAsync(backgroundColor);
     NavigationBar.setButtonStyleAsync(buttonStyle);
   }, [isDark]);
 
